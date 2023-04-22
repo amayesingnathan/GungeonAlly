@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 namespace GungeonApp.Model
 {
     public static class GameEntryEnumerableExtensions
-    {        public static IEnumerable<GameEntry> Match(this IEnumerable<GameEntry> self, string input)
+    {        public static IEnumerable<ItemBase> Match(this IEnumerable<ItemBase> self, string input)
         {
-            return self.Where(x => x.Name.StartsWith(input));
+            return self.Where(x => x.ItemName.StartsWith(input));
         }
     }
 }

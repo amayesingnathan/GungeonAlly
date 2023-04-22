@@ -22,5 +22,19 @@ namespace GungeonApp.Model
             }
             return string.Empty;
         }
+        public static LoadType GetDataLoadType(Type type, string propertyName)
+        {
+            var property = type
+                           .GetProperty(propertyName)
+                           .GetCustomAttributes(false)
+                           .Where(x => x.GetType().Name == "DataNameAttribute")
+                           .FirstOrDefault();
+
+            if (property != null)
+            {
+                return ((DataNameAttribute)property).LoadType;
+            }
+            return LoadType.Default;
+        }
     }
 }

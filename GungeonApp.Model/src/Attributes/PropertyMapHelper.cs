@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace GungeonApp.Model
@@ -14,6 +15,7 @@ namespace GungeonApp.Model
         public static void Map(Type type, DataRow row, PropertyInfo prop, object entity)
         {
             string columnName = AttributeHelper.GetDataName(type, prop.Name);
+            LoadType loadType = AttributeHelper.GetDataLoadType(type, prop.Name);
 
             if (!string.IsNullOrWhiteSpace(columnName)
                 && row.Table.Columns.Contains(columnName))
@@ -21,18 +23,27 @@ namespace GungeonApp.Model
                 var propertyValue = row[columnName];
                 if (propertyValue != DBNull.Value)
                 {
-                    ParsePrimitive(prop, entity, row[columnName]);
+                    ParsePrimitive(prop, entity, row[columnName], loadType);
                     return;
                 }
             }
         }
-        private static void ParsePrimitive(PropertyInfo prop, object entity, object value)
+        private static void ParsePrimitive(PropertyInfo prop, object entity, object value, LoadType loadType)
         {
+            if (loadType == LoadType.ImageUrl)
+            {
+                HttpClient wc = new HttpClient();
+                byte[] data = wc.GetByteArrayAsync(value.ToString()).Result;
+                return;
+            }
+
             if (prop.PropertyType == typeof(string))
             {
                 prop.SetValue(entity, value.ToString()?.Trim(), null);
+                return;
             }
-            else if (prop.PropertyType == typeof(char))
+
+            if (prop.PropertyType == typeof(char))
             {
                 if (value == null)
                 {
@@ -42,8 +53,10 @@ namespace GungeonApp.Model
                 {
                     prop.SetValue(entity, value.ToString()?[0], null);
                 }
+                return;
             }
-            else if (prop.PropertyType == typeof(bool) || prop.PropertyType == typeof(bool?))
+
+            if (prop.PropertyType == typeof(bool) || prop.PropertyType == typeof(bool?))
             {
                 if (value == null)
                 {
@@ -53,6 +66,7 @@ namespace GungeonApp.Model
                 {
                     prop.SetValue(entity, ParseBoolean(value.ToString()), null);
                 }
+                return;
             }
             else if (prop.PropertyType == typeof(long))
             {

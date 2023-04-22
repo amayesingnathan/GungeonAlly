@@ -5,60 +5,63 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using GungeonApp.DatabaseCore;
+using GungeonApp.DatabaseCore.ColumnAttribute;
+
 namespace GungeonApp.Model
 {
-    public class Gun
+    public class Gun : ItemBase
     {
-        public int ID{ get; set; }
-        [DataName("Icon")]
-        public string IconUrl { get; set; }
-        [DataName("Name")]
-        public string Name { get; set; }
+        [ColumnMap("Notes")]
         [DataName("Notes")]
         public string Notes { get; set; }
-        [DataName("Quote")]
-        public string Quote { get; set; }
-        [DataName("Quality")]
-        public string Quality { get; set; }
+        [ColumnMap("GunType")]
         [DataName("Type")]
-        public string Type { get; set; }
+        public string GunType { get; set; }
         [DataName("DPS")]
+        [ColumnMap("DPS")]
         public string DPS { get; set; }
+        [ColumnMap("MagSize")]
         [DataName("Magazine Size")]
         public string MagSize { get; set; }
+        [ColumnMap("AmmoCap")]
         [DataName("Ammo Capacity")]
         public string AmmoCap { get; set; }
+        [ColumnMap("Damage")]
         [DataName("Damage")]
         public string Damage { get; set; }
+        [ColumnMap("FireRate")]
         [DataName("FireRate")]
         public string FireRate { get; set; }
+        [ColumnMap("ReloadTime")]
         [DataName("Reload Time")]
         public string ReloadTime { get; set; }
+        [ColumnMap("ShotSpeed")]
         [DataName("Shot Speed")]
         public string ShotSpeed { get; set; }
+        [ColumnMap("Range")]
         [DataName("Range")]
         public string Range { get; set; }
+        [ColumnMap("Force")]
         [DataName("Force")]
         public string Force { get; set; }
+        [ColumnMap("Spread")]
         [DataName("Spread")]
         public string Spread { get; set; }
+        [ColumnMap("Class")]
         [DataName("Class")]
         public string Class { get; set; }
-        
         public Gun()
         {
-            IconUrl = string.Empty;
-            Name = string.Empty;
+            Type = ItemType.Gun;
             Notes = string.Empty;
-            Quote = string.Empty;
-            Quality = string.Empty;
-            Type = string.Empty;
             DPS = string.Empty;
             MagSize = string.Empty;
             AmmoCap = string.Empty;
             Damage = string.Empty;
             FireRate = string.Empty;
             ReloadTime = string.Empty;
+            GunType = string.Empty;
             ShotSpeed = string.Empty;
             Range = string.Empty;
             Force = string.Empty;
@@ -66,5 +69,4 @@ namespace GungeonApp.Model
             Class = string.Empty;
         }
     }
-
 }
