@@ -1,0 +1,49 @@
+﻿@inject HttpClient Http
+
+<div class="guns-frame">
+    <div class="inventory-label">
+        Guns
+    </div>
+</div>
+<div class="actives-frame">
+    <div class="inventory-label">
+        Active Items
+    </div>
+</div>
+<div class="passives-frame">
+    <div class="inventory-label">
+        Passive Items
+    </div>
+    @{
+        string columnCount = Passives.Count < 7 ? Passives.Count.ToString() : "8";
+
+        <div style="border-radius: 25px; border: 2px solid; padding: 20px; columns: @columnCount auto; margin-left: 5%; margin-right: 5%">
+            @{
+                foreach (Item passiveItem in Passives)
+                {
+                    <img src="@passiveItem.IconUrl" />
+                }
+            }
+        </div>
+    }
+
+</div>
+
+@code {
+    private GameDictionary? GameData;
+    private List<Item> Passives = new List<Item>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        string guns = await Http.GetStringAsync("data/guns.json");
+        string items = await Http.GetStringAsync("data/items.json");
+
+        GameData = new GameDictionary(guns, items);
+
+        Passives.Add(GameData.FindItem("Obsidian Shell Casing").First());
+        Passives.Add(GameData.FindItem("Explosive Rounds").First());
+        Passives.Add(GameData.FindItem("Katana Bullets").First());
+        Passives.Add(GameData.FindItem("Alpha Bullet").First());
+    }
+
+}

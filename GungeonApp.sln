@@ -1,0 +1,49 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33502.453
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GungeonApp.WebScraper", "GungeonApp.WebScraper\GungeonApp.WebScraper.csproj", "{5FABAC71-7E1C-4195-9028-65E71361EAB0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GungeonApp.Model", "GungeonApp.Model\GungeonApp.Model.csproj", "{A525D77B-83B6-4B0B-9AFD-017FF5140C7B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GungeonApp.API", "GungeonApp.API\GungeonApp.API.csproj", "{3139669C-2DAB-46E5-8B96-08BCE43D0A7B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{BB942838-AD69-40CD-9FBB-BE5945D57CD7}"
+	ProjectSection(SolutionItems) = preProject
+		GungeonApp.WebScraper\bin\Debug\net7.0\guns.json = GungeonApp.WebScraper\bin\Debug\net7.0\guns.json
+		GungeonApp.WebScraper\bin\Debug\net7.0\items.json = GungeonApp.WebScraper\bin\Debug\net7.0\items.json
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GungeonApp.WebApp", "GungeonApp.WebApp\GungeonApp.WebApp.csproj", "{59A54757-95FB-4DBD-835C-D63C9ACCC93E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5FABAC71-7E1C-4195-9028-65E71361EAB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5FABAC71-7E1C-4195-9028-65E71361EAB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5FABAC71-7E1C-4195-9028-65E71361EAB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5FABAC71-7E1C-4195-9028-65E71361EAB0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A525D77B-83B6-4B0B-9AFD-017FF5140C7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A525D77B-83B6-4B0B-9AFD-017FF5140C7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A525D77B-83B6-4B0B-9AFD-017FF5140C7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A525D77B-83B6-4B0B-9AFD-017FF5140C7B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3139669C-2DAB-46E5-8B96-08BCE43D0A7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3139669C-2DAB-46E5-8B96-08BCE43D0A7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3139669C-2DAB-46E5-8B96-08BCE43D0A7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3139669C-2DAB-46E5-8B96-08BCE43D0A7B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59A54757-95FB-4DBD-835C-D63C9ACCC93E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59A54757-95FB-4DBD-835C-D63C9ACCC93E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59A54757-95FB-4DBD-835C-D63C9ACCC93E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59A54757-95FB-4DBD-835C-D63C9ACCC93E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6C912C7D-AAA8-417D-82A0-0539B8FFDE1D}
+	EndGlobalSection
+EndGlobal
