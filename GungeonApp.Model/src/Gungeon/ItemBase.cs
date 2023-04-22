@@ -47,7 +47,7 @@ namespace GungeonApp.Model
         {
             BaseID = int.MaxValue;
             Type = ItemType.None;
-            ImageData = new byte[1];
+            ImageData = new byte[0];
             ItemName = string.Empty;
             Quote = string.Empty;
             Quality = Quality.N;

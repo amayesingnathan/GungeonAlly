@@ -34,16 +34,12 @@ namespace GungeonApp.Model
             {
                 HttpClient wc = new HttpClient();
                 byte[] data = wc.GetByteArrayAsync(value.ToString()).Result;
-                return;
             }
-
-            if (prop.PropertyType == typeof(string))
+            else if (prop.PropertyType == typeof(string))
             {
                 prop.SetValue(entity, value.ToString()?.Trim(), null);
-                return;
             }
-
-            if (prop.PropertyType == typeof(char))
+            else if (prop.PropertyType == typeof(char))
             {
                 if (value == null)
                 {
@@ -53,10 +49,8 @@ namespace GungeonApp.Model
                 {
                     prop.SetValue(entity, value.ToString()?[0], null);
                 }
-                return;
             }
-
-            if (prop.PropertyType == typeof(bool) || prop.PropertyType == typeof(bool?))
+            else if (prop.PropertyType == typeof(bool) || prop.PropertyType == typeof(bool?))
             {
                 if (value == null)
                 {
@@ -66,7 +60,6 @@ namespace GungeonApp.Model
                 {
                     prop.SetValue(entity, ParseBoolean(value.ToString()), null);
                 }
-                return;
             }
             else if (prop.PropertyType == typeof(long))
             {
