@@ -8,25 +8,17 @@ using System.Data;
 
 using Newtonsoft.Json;
 
+using GungeonApp.Model;
+using GungeonApp.Database;
+
 namespace GungeonApp.WebScraper
 {
     class Program
     {
         static void Main(string[] args)
         {
-            var json = JsonConvert.SerializeObject(Scraper.GetGunData(), Formatting.Indented);
-
-            using (StreamWriter file = new StreamWriter("guns.json"))
-            {
-                file.Write(json);
-            }
-
-            json = JsonConvert.SerializeObject(Scraper.GetItemData(), Formatting.Indented);
-
-            using (StreamWriter file = new StreamWriter("items.json"))
-            {
-                file.Write(json);
-            }
+            GungeonDB.ImportGuns(Scraper.GetGunData());
+            GungeonDB.ImportItems(Scraper.GetItemData());
         }
     }
 }

@@ -1,6 +1,4 @@
-﻿@inject HttpClient Http
-
-<div class="guns-frame">
+﻿<div class="guns-frame">
     <div class="inventory-label">
         Guns
     </div>
@@ -21,7 +19,7 @@
             @{
                 foreach (Item passiveItem in Passives)
                 {
-                    <img src="@passiveItem.IconUrl" />
+                    <img src="@passiveItem.ImageAsURI" />
                 }
             }
         </div>
@@ -30,20 +28,17 @@
 </div>
 
 @code {
-    private GameDictionary? GameData;
+    [Inject]
+    public IGungeonService GungeonService { get; set; }
+
     private List<Item> Passives = new List<Item>();
 
     protected override async Task OnInitializedAsync()
     {
-        string guns = await Http.GetStringAsync("data/guns.json");
-        string items = await Http.GetStringAsync("data/items.json");
-
-        GameData = new GameDictionary(guns, items);
-
-        Passives.Add(GameData.FindItem("Obsidian Shell Casing").First());
-        Passives.Add(GameData.FindItem("Explosive Rounds").First());
-        Passives.Add(GameData.FindItem("Katana Bullets").First());
-        Passives.Add(GameData.FindItem("Alpha Bullet").First());
+        Passives.AddRange(await GungeonService.GetItem("Obsidian Shell Casing"));
+        Passives.AddRange(await GungeonService.GetItem("Explosive Rounds"));
+        Passives.AddRange(await GungeonService.GetItem("Katana Bullets"));
+        Passives.AddRange(await GungeonService.GetItem("Alpha Bullet"));
     }
 
 }

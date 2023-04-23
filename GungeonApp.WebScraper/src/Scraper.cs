@@ -32,13 +32,13 @@ namespace GungeonApp.WebScraper
             return ExtractDataFromHtml<Item>(nodes);
         }
 
-        private static IEnumerable<T> ExtractDataFromHtml<T>(HtmlNodeCollection nodes) where T: class, new()
+        private static IEnumerable<T> ExtractDataFromHtml<T>(HtmlNodeCollection nodes) where T: ItemBase, new()
         {
             var table = new DataTable();
 
             IEnumerable<string> headers = nodes[0]
                 .Elements("th")
-                .Select(th => th.InnerText.Trim())
+                .Select(th => th.InnerText.Replace("\\n", "").Trim())
                 .DeNull();
 
             foreach (var header in headers)
@@ -46,17 +46,23 @@ namespace GungeonApp.WebScraper
                 table.Columns.Add(header);
             }
 
-            string[][] rows = nodes.Skip(1).Select(tr => tr
-                .Elements("td")
-                .Select(td =>
-                {
-                    if (td.InnerText.Length != 0)
-                        return td.InnerText.Trim();
+            string[][] rows = nodes
+                .Skip(1)
+                .Select(tr => tr
+                    .Elements("td")
+                    .Select(td =>
+                    {
+                        var trimmed = td.InnerText
+                            .Replace("\n", "")
+                            .Replace("\r", "");
 
-                    return td.SelectSingleNode("a")?.SelectSingleNode("img")?.GetAttributeValue("data-src", string.Empty);
-                })
-                .DeNull()
-                .ToArray())
+                        if (trimmed.Length != 0)
+                            return trimmed.Trim();
+
+                        return td.SelectSingleNode("a")?.SelectSingleNode("img")?.GetAttributeValue("data-src", string.Empty);
+                    })
+                    .DeNull()
+                    .ToArray())
                 .ToArray();
 
             foreach (string[] row in rows)
@@ -64,11 +70,12 @@ namespace GungeonApp.WebScraper
                 table.Rows.Add(row);
             }
 
-            var data = DataNameMapper<T>.Map(table);
+            var data = DataNameMapper<T>.Map(table)
+                .Where(x => x.Quote.Length != 0);
+
             foreach (var row in data)
             {
-                var prop = typeof(T).GetProperty("ID");
-                prop?.SetValue(row, NextID++);
+                row.BaseID = NextID++;
             }
 
             return data;

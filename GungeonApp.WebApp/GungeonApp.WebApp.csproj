@@ -9,10 +9,11 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.4" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0-preview.3.23174.8" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GungeonApp.API\GungeonApp.API.csproj" />
+    <ProjectReference Include="..\GungeonApp.Database\GungeonApp.Database.csproj" />
     <ProjectReference Include="..\GungeonApp.Model\GungeonApp.Model.csproj" />
   </ItemGroup>
 
