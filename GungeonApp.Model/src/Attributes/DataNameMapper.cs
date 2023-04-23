@@ -42,9 +42,17 @@ namespace GungeonApp.Model
                                                 .ToList();
 
             //Step 3 - Map the data
+            int i = 0; int max = table.Rows.Count; int percent = 0;
+
             List<TEntity> entities = new List<TEntity>();
             foreach (DataRow row in table.Rows)
             {
+                if (++i % (max / 10) == 0)
+                {
+                    Console.WriteLine("{0}% complete...", percent);
+                    percent += 10;
+                }
+
                 TEntity entity = new TEntity();
                 foreach (var prop in properties)
                 {

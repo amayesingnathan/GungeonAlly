@@ -5,7 +5,11 @@ using System.Data;
 using System.Data.Common;
 using System.Linq;
 
+using Microsoft.Extensions.Configuration;
+
 using GungeonApp.DatabaseCore.ColumnAttribute;
+using System.Data.SqlClient;
+
 namespace GungeonApp.DatabaseCore
 {
     public class DatabaseConnection
@@ -25,7 +29,7 @@ namespace GungeonApp.DatabaseCore
         /// <summary>
         /// Database Provider Name
         /// </summary>
-        public string? ProviderName { get; private set; }
+        public const string ProviderName = "System.Data.SqlClient";
 
         /// <summary>
         /// Is the database connection correctly initialised
@@ -45,34 +49,12 @@ namespace GungeonApp.DatabaseCore
         /// Constructor
         /// </summary>
         /// <param name="connectionStringName">Connection string name.</param>
-        public DatabaseConnection(string connectionStringName)
+        public DatabaseConnection(string connectionString)
         {
-            //
-            // Validate connection setting name
-            //
-            if (string.IsNullOrEmpty(connectionStringName))
-            {
-                throw new ArgumentException("Missing database connection string name.", nameof(connectionStringName));
-            }
-            var cs = ConfigurationManager.ConnectionStrings[connectionStringName];
-            if (cs == null)
-            {
-                throw new ArgumentException(string.Format("Connection setting [{0}] not found.", connectionStringName), nameof(connectionStringName));
-            }
             // 
             // Common connection setup
             //
-            InitialiseConnection(cs.ConnectionString, cs.ProviderName);
-        }
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="connectionString">Database connection string.</param>
-        /// <param name="providerName">Database provider name.</param>
-        public DatabaseConnection(string connectionString, string providerName)
-        {
-            InitialiseConnection(connectionString, providerName);
+            InitialiseConnection(connectionString);
         }
 
         /// <summary>
@@ -80,7 +62,7 @@ namespace GungeonApp.DatabaseCore
         /// </summary>
         /// <param name="connectionString">Database connection string</param>
         /// <param name="providerName">Invariant name of a provider</param>
-        private void InitialiseConnection(string connectionString, string providerName)
+        private void InitialiseConnection(string connectionString)
         {
             //
             // Validate passed parameters and store
@@ -90,18 +72,6 @@ namespace GungeonApp.DatabaseCore
                 throw new ArgumentException("Missing database connection string.", nameof(connectionString));
             }
             ConnectionString = connectionString;
-
-            if (string.IsNullOrEmpty(providerName))
-            {
-                throw new ArgumentException("Missing database provider name.", nameof(providerName));
-            }
-            ProviderName = providerName;
-            //
-            // Get the database provide factory for this provider name
-            // Will throw an ArgumentException if provider is not known 
-            //
-            _DbProvider = DbProviderFactories.GetFactory(providerName);
-            _DbCommandBuilder = _DbProvider.CreateCommandBuilder();
             //
             // Successfully configured so mark as valid.
             //
@@ -174,8 +144,7 @@ namespace GungeonApp.DatabaseCore
         /// <returns></returns>
         public DbConnection GetDbConnection(bool openConnection = true)
         {
-            var dbConnection = _DbProvider.CreateConnection();
-            dbConnection.ConnectionString = ConnectionString;
+            var dbConnection = new SqlConnection(ConnectionString);
             if (openConnection)
             {
                 dbConnection.Open();

@@ -9,7 +9,8 @@ namespace GungeonApp.Model
     public enum LoadType
     {
         Default, 
-        ImageUrl
+        ImageUrl,
+        QualityURL
     }
 
     [AttributeUsage(AttributeTargets.Property)]

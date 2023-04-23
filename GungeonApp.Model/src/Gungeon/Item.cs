@@ -9,16 +9,21 @@ using GungeonApp.DatabaseCore.ColumnAttribute;
 
 namespace GungeonApp.Model
 {
-
     public class Item : ItemBase
     {
         [ColumnMap("ItemEffect")]
         [DataName("Effect")]
         public string Effect { get; set; }
 
+        [ColumnMap("ItemType")]
+        [DataName("Type")]
+        public string ItemType { get; set; }
+
         public Item()
         {
+            Type = Model.ItemType.Item;
             Effect = string.Empty;
+            ItemType = string.Empty;
         }
     }
 }

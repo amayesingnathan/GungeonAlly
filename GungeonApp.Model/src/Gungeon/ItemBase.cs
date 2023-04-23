@@ -22,20 +22,33 @@ namespace GungeonApp.Model
     {
         [ColumnMap("BaseID")]
         public int BaseID { get; set; }
-        [ColumnMap("Type")]
-        public ItemType Type { get; set; }
 
         [ColumnMap("IconImageData")]
         [DataName("Icon", LoadType.ImageUrl)]
         public byte[] ImageData { get; set; }
+
+        public string ImageAsURI
+        {
+            get
+            {
+                var imagesrc = Convert.ToBase64String(ImageData);
+                return string.Format("data:image/png;base64,{0}", imagesrc);
+            }
+        }
+
         [ColumnMap("ItemName")]
         [DataName("Name")]
         public string ItemName { get; set; }
-        [DataName("Quality")]
+
+        [ColumnMap("Type")]
+        public ItemType Type { get; set; }
+
         [ColumnMap("Quote")]
+        [DataName("Quote")]
         public string Quote { get; set; }
-        [DataName("Quality")]
+
         [ColumnMap("Quality")]
+        [DataName("Quality", LoadType.QualityURL)]
         public Quality Quality { get; set; }
 
         public void ParseDataRecord(IDataRecord dataRecord)

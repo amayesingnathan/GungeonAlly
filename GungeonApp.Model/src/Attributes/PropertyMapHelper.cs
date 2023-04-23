@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Net;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace GungeonApp.Model
 {
@@ -33,7 +34,32 @@ namespace GungeonApp.Model
             if (loadType == LoadType.ImageUrl)
             {
                 HttpClient wc = new HttpClient();
-                byte[] data = wc.GetByteArrayAsync(value.ToString()).Result;
+                try
+                {
+                    byte[] data = wc.GetByteArrayAsync(value.ToString()).Result;
+                    prop.SetValue(entity, data, null);
+                }
+                catch
+                {
+                    prop.SetValue(entity, null, null);
+                }
+            }
+            else if (loadType == LoadType.QualityURL)
+            {
+                var url = value?.ToString()?.Split('/');
+
+                if (url is null || url.Length < 8)
+                {
+                    return;
+                }
+
+                var qualityChar = url[7].First().ToString();
+                Quality qual;
+                if (Enum.TryParse(qualityChar, out qual))
+                {
+                    prop.SetValue(entity, qual, null);
+                }
+
             }
             else if (prop.PropertyType == typeof(string))
             {
