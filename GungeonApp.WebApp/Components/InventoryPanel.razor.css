@@ -1,4 +1,19 @@
-﻿.inventory-label {
+﻿.guns-frame {
+    height: 40%;
+    min-height: 40vh;
+}
+
+.actives-frame {
+    height: 20%;
+    min-height: 20vh;
+}
+
+.passives-frame {
+    height: 40%;
+    min-height: 40vh;
+}
+
+.inventory-label {
     background-color: #201d2f;
     color: white;
     padding-top: 5px;
@@ -19,27 +34,3 @@
     border-style: ridge;
     outline: 2px solid #201d2f
 }
-
-.guns-frame {
-    height: 40%;
-    min-height: 40vh;
-}
-
-.actives-frame {
-    height: 20%;
-    min-height: 20vh;
-}
-
-.passives-frame {
-    height: 40%;
-    min-height: 40vh;
-}
-
-.item-frame {
-    margin-left: auto;
-    margin-right: auto;
-}
-    .item-frame img {
-        height: max-content;
-        width: max-content;
-    }

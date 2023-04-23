@@ -19,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GungeonApp.DatabaseCore", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GungeonApp.Database", "GungeonApp.Database\GungeonApp.Database.csproj", "{55991A07-DDB3-43C6-AF11-25346600330B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GungeonApp.API", "GungeonApp.API\GungeonApp.API.csproj", "{9EF4F494-EE98-4B94-A9F5-DCA72A350C76}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GungeonApp.API", "GungeonApp.API\GungeonApp.API.csproj", "{9EF4F494-EE98-4B94-A9F5-DCA72A350C76}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

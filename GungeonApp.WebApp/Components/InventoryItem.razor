@@ -1,0 +1,17 @@
+﻿@{
+    using (Image image = Image.Load(Context.ImageData))
+    {
+        var name = Context.ItemName;
+        int width = image.Width;
+        int height = image.Height;
+
+        <div class="item-frame">
+            <img src="@Context.ImageAsURI" style="width: @width; height: @height;"/>
+        </div>
+    }
+}
+
+@code {
+    [Parameter]
+    public ItemBase Context { get; set; }
+}
