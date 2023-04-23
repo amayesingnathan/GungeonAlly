@@ -39,7 +39,7 @@ namespace GungeonApp.WebScraper
             IEnumerable<string> headers = nodes[0]
                 .Elements("th")
                 .Select(th => th.InnerText.Replace("\\n", "").Trim())
-                .DeNull();
+                .ReplaceNull();
 
             foreach (var header in headers)
             {
@@ -61,7 +61,7 @@ namespace GungeonApp.WebScraper
 
                         return td.SelectSingleNode("a")?.SelectSingleNode("img")?.GetAttributeValue("data-src", string.Empty);
                     })
-                    .DeNull()
+                    .ReplaceNull()
                     .ToArray())
                 .ToArray();
 

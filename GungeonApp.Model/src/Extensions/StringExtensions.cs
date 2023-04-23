@@ -8,7 +8,7 @@ namespace GungeonApp.Model
 {
     public static class StringEnumerableExtensions
     {
-        public static IEnumerable<string> DeNull(this IEnumerable<string?> strings)
+        public static IEnumerable<string> ReplaceNull(this IEnumerable<string?> strings)
         {
             return strings.Select(s => s is null ? string.Empty : s);
         }

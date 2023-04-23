@@ -9,17 +9,15 @@ namespace GungeonApp.Model
 {
     public class Inventory
     {
-        public ItemBase[] Items { get; set; }
-
-        public Inventory()
-        {
-            Items = new ItemBase[0];
-        }
+        public Dictionary<int, ItemBase> Items { get; set; } = new Dictionary<int, ItemBase>();
+        public Dictionary<int, Gun> Guns { get; set; } = new Dictionary<int, Gun>();
+        public Dictionary<int, Item> Actives { get; set; } = new Dictionary<int, Item>();
+        public Dictionary<int, Item> Passives { get; set; } = new Dictionary<int, Item>();
 
         public bool HasSynergy(Synergy trySynergy)
         {
-            return trySynergy.RequireAll.All(x => Items.Any(y => x.BaseID == y.BaseID)) &&
-                trySynergy.RequireOne.Any(x => Items.Any(y => x.BaseID == y.BaseID));
+            return trySynergy.RequireAll.All(x => Items.Any(y => x.BaseID == y.Key)) &&
+                trySynergy.RequireOne.Any(x => Items.Any(y => x.BaseID == y.Key));
         }
     }
 }

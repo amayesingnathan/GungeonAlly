@@ -115,49 +115,6 @@ a, .btn-link {
     min-height: 100vh;
 }
 
-.inventory-panel {
-    width: 45%;
-    height: 100%;
-    min-height: 100vh;
-    background-color: #F3E1D5;
-}
-
-    .inventory-label {
-        background-color: #201d2f;
-        color: white;
-        padding-top: 5px;
-        padding-bottom: 5px;
-        margin-bottom: 20px;
-        position: relative;
-        font-size: 24px;
-        left: 50%;
-        transform: translate(-50%);
-        width: 28%;
-        height: min-content;
-        font-family: Alagard;
-        letter-spacing: 0.1em;
-        border-radius: 6px;
-        border-color: white;
-        border-width: 4px;
-        border-style: ridge;
-        outline: 2px solid #201d2f
-    }
-
-    .guns-frame {
-        height: 40%;
-        min-height: 40vh;
-    }
-
-    .actives-frame {
-        height: 20%;
-        min-height: 20vh;
-    }
-
-    .passives-frame {
-        height: 40%;
-        min-height: 40vh;
-    }
-
 .search-panel {
     width: 25%;
     height: 100%;
@@ -173,4 +130,11 @@ a, .btn-link {
     content: "";
     display: table;
     clear: both;
+}
+
+.inventory-panel {
+    width: 45%;
+    height: 100%;
+    min-height: 100vh;
+    background-color: #F3E1D5;
 }

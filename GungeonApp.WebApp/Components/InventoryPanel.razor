@@ -2,24 +2,54 @@
     <div class="inventory-label">
         Guns
     </div>
+    @{
+        string gunColumnCount = Inventory.Guns.Count < 7 ? Inventory.Guns.Count.ToString() : "8";
+
+        <div style="border-radius: 25px; border: 2px solid; padding: 20px; columns: @gunColumnCount auto; margin-left: 5%; margin-right: 5%;">
+            @{
+                foreach (Gun gun in Inventory.Guns.Values)
+                {
+                    <div class="item-frame">
+                        <img src="@gun.ImageAsURI" />
+                    </div>
+                }
+            }
+        </div>
+    }
 </div>
 <div class="actives-frame">
     <div class="inventory-label">
         Active Items
     </div>
+    @{
+        string activeColumnCount = Inventory.Actives.Count < 7 ? Inventory.Actives.Count.ToString() : "8";
+
+        <div style="border-radius: 25px; border: 2px solid; padding: 20px; columns: @activeColumnCount auto; margin-left: 5%; margin-right: 5%;">
+            @{
+                foreach (Item activeItem in Inventory.Actives.Values)
+                {
+                    <div class="item-frame">
+                        <img src="@activeItem.ImageAsURI" />
+                    </div>
+                }
+            }
+        </div>
+    }
 </div>
 <div class="passives-frame">
     <div class="inventory-label">
         Passive Items
     </div>
     @{
-        string columnCount = Passives.Count < 7 ? Passives.Count.ToString() : "8";
+        string passiveColumnCount = Inventory.Passives.Count < 7 ? Inventory.Passives.Count.ToString() : "8";
 
-        <div style="border-radius: 25px; border: 2px solid; padding: 20px; columns: @columnCount auto; margin-left: 5%; margin-right: 5%">
+        <div style="border-radius: 25px; border: 2px solid; padding: 20px; columns: @passiveColumnCount auto; margin-left: 5%; margin-right: 5%;">
             @{
-                foreach (Item passiveItem in Passives)
+                foreach (Item passiveItem in Inventory.Passives.Values)
                 {
-                    <img src="@passiveItem.ImageAsURI" />
+                    <div class="item-frame">
+                        <img src="@passiveItem.ImageAsURI" />
+                    </div>
                 }
             }
         </div>
@@ -31,14 +61,21 @@
     [Inject]
     public IGungeonService GungeonService { get; set; }
 
-    private List<Item> Passives = new List<Item>();
+    private Inventory Inventory = new Inventory();
 
     protected override async Task OnInitializedAsync()
     {
-        Passives.AddRange(await GungeonService.GetItem("Obsidian Shell Casing"));
-        Passives.AddRange(await GungeonService.GetItem("Explosive Rounds"));
-        Passives.AddRange(await GungeonService.GetItem("Katana Bullets"));
-        Passives.AddRange(await GungeonService.GetItem("Alpha Bullet"));
+        Inventory.Guns.AddRange(await GungeonService.GetGun("Rusty Sidearm"));
+        Inventory.Guns.AddRange(await GungeonService.GetGun("Gunther"));
+        Inventory.Guns.AddRange(await GungeonService.GetGun("Railgun"));
+        Inventory.Guns.AddRange(await GungeonService.GetGun("Void Core Assault Rifle"));
+
+        Inventory.Actives.AddRange(await GungeonService.GetItem("Daruma"));
+
+        Inventory.Passives.AddRange(await GungeonService.GetItem("Obsidian Shell Casing"));
+        Inventory.Passives.AddRange(await GungeonService.GetItem("Explosive Rounds"));
+        Inventory.Passives.AddRange(await GungeonService.GetItem("Katana Bullets"));
+        Inventory.Passives.AddRange(await GungeonService.GetItem("Alpha Bullet"));
     }
 
 }
