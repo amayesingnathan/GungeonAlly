@@ -79,5 +79,9 @@ namespace GungeonApp.Model
             Spread = string.Empty;
             Class = string.Empty;
         }
+        public override void ParseDataRecord(IDataRecord dataRecord)
+        {
+            dataRecord.ParseByColumnMap(this);
+        }
     }
 }

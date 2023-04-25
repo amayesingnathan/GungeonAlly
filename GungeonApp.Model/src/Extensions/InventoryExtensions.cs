@@ -1,9 +1,9 @@
-﻿using GungeonApp.Model.src.Extensions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SixLabors.ImageSharp;
 
 namespace GungeonApp.Model
 {
@@ -28,6 +28,33 @@ namespace GungeonApp.Model
             {
                 items.Add(item.BaseID, item);
             }
+        }
+
+        private const int PanelScaleWidth = 100;
+        public static IEnumerable<IEnumerable<ItemBase>> IntoBuckets(this IEnumerable<ItemBase> self)
+        {
+            int currentRowWidth = 0;
+            List<ItemBase> bucket = new List<ItemBase>();
+
+            foreach (ItemBase item in self)
+            {
+                using (Image image = Image.Load(item.ImageData))
+                {
+                    currentRowWidth += image.Width;
+                }
+
+                if (currentRowWidth >= PanelScaleWidth)
+                {
+                    yield return bucket;
+
+                    bucket.Clear();
+                    currentRowWidth = 0;
+                }
+
+                bucket.Add(item);
+            }
+
+            yield return bucket;
         }
     }
 }

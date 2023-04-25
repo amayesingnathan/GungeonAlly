@@ -1,7 +1,14 @@
 ﻿<div class="item-panel">
-    @foreach (ItemBase item in Context)
+    @foreach (var row in Context.IntoBuckets())
     {
-        
+        <div class="row-wrapper">
+            @foreach (ItemBase item in row)
+            {
+                <div class="column-wrapper">
+                    <InventoryItem Context="@item" Scale="5"/>
+                </div>
+            }
+        </div>
     }
 </div>
 

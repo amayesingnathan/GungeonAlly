@@ -18,8 +18,27 @@ namespace GungeonApp.WebApp.Services
         {
             _httpClient = httpClient;
         }
+        public Gun? GetGun(int id)
+        {
+            try
+            {
+                string endpoint = $"{BaseAddress}/gun/id/{id}";
+                var gun = _httpClient.GetFromJsonAsync<Gun>(endpoint).Result;
+                if (gun is null)
+                {
+                    Console.WriteLine("Could not retrieve resource at {0}", endpoint);
+                }
 
-        public async Task<Gun?> GetGun(int id)
+                return gun;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex}");
+                return null;
+            }
+        }
+
+        public async Task<Gun?> GetGunAsync(int id)
         {
             try
             {
@@ -39,7 +58,27 @@ namespace GungeonApp.WebApp.Services
             }
         }
 
-        public async Task<Gun[]?> GetGun(string name)
+        public Gun[]? GetGun(string name)
+        {
+            try
+            {
+                string endpoint = $"{BaseAddress}/gun/name/{name}";
+                var gun = _httpClient.GetFromJsonAsync<Gun[]>(endpoint).Result;
+                if (gun is null)
+                {
+                    Console.WriteLine("Could not retrieve resource at {0}", endpoint);
+                }
+
+                return gun;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex}");
+                return null;
+            }
+        }
+
+        public async Task<Gun[]?> GetGunAsync(string name)
         {
             try
             {
@@ -59,7 +98,27 @@ namespace GungeonApp.WebApp.Services
             }
         }
 
-        public async Task<Item?> GetItem(int id)
+        public Item? GetItem(int id)
+        {
+            try
+            {
+                string endpoint = $"{BaseAddress}/item/id/{id}";
+                var item = _httpClient.GetFromJsonAsync<Item>(endpoint).Result;
+                if (item is null)
+                {
+                    Console.WriteLine("Could not retrieve resource at {0}", endpoint);
+                }
+
+                return item;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex}");
+                return null;
+            }
+        }
+
+        public async Task<Item?> GetItemAsync(int id)
         {
             try
             {
@@ -79,7 +138,27 @@ namespace GungeonApp.WebApp.Services
             }
         }
 
-        public async Task<Item[]?> GetItem(string name)
+        public Item[]? GetItem(string name)
+        {
+            try
+            {
+                string endpoint = $"{BaseAddress}/item/name/{name}";
+                var item = _httpClient.GetFromJsonAsync<Item[]>(endpoint).Result;
+                if (item is null)
+                {
+                    Console.WriteLine("Could not retrieve resource at {0}", endpoint);
+                }
+
+                return item;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex}");
+                return null;
+            }
+        }
+
+        public async Task<Item[]?> GetItemAsync(string name)
         {
             try
             {
@@ -99,7 +178,27 @@ namespace GungeonApp.WebApp.Services
             }
         }
 
-        public async Task<ItemBase[]?> SearchItem(string name)
+        public ItemBase[]? SearchItem(string name)
+        {
+            try
+            {
+                string endpoint = $"{BaseAddress}/search/{name}";
+                var items = _httpClient.GetFromJsonAsync<Item[]>(endpoint).Result;
+                if (items is null)
+                {
+                    Console.WriteLine("Could not retrieve resource at {0}", endpoint);
+                }
+
+                return items;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex}");
+                return null;
+            }
+        }
+
+        public async Task<ItemBase[]?> SearchItemAsync(string name)
         {
             try
             {

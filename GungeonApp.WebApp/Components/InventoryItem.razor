@@ -1,17 +1,40 @@
-﻿@{
-    using (Image image = Image.Load(Context.ImageData))
-    {
-        var name = Context.ItemName;
-        int width = image.Width;
-        int height = image.Height;
+﻿@inject InventoryState State
 
-        <div class="item-frame">
-            <img src="@Context.ImageAsURI" style="width: @width; height: @height;"/>
-        </div>
+@{
+    if (Context != null)
+    {
+        using (var image = Image.Load(Context.ImageData))
+        {
+            int width = image.Width * Scale;
+            int height = image.Height * Scale;
+            image.Mutate(x => x.Resize(width, height, KnownResamplers.NearestNeighbor));
+
+            <div style="width: 100%; height: 100%" @onclick="OnItemClicked">
+                <img src="@image.ToBase64String(PngFormat.Instance)"/>
+            </div>
+        }
     }
 }
 
 @code {
+    [Inject]
+    public IRefreshService RefreshService { get; set; }
+
     [Parameter]
     public ItemBase Context { get; set; }
+
+    [Parameter]
+    public int Scale { get; set; }
+
+    [Parameter]
+    public bool Selectable { get; set; } = true;
+
+    private void OnItemClicked()
+    {
+        if (Selectable)
+        {
+            State.CurrentItemSelected = Context;
+            RefreshService.RequestRefresh();
+        }
+    }
 }

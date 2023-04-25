@@ -1,7 +1,7 @@
 ﻿.equipment-heading {
     height: 12%;
     min-height: 12%;
-    font-size: 48px;
+    font-size: 60px;
     font-family: Alagard;
     padding-top: 5px;
 }
@@ -35,10 +35,11 @@
 .inventory-label {
     background-color: #201d2f;
     color: white;
-    width: 41%;
+    width: 44%;
     height: fit-content;
     padding: 2px 2px 2px 5px;
-    font-size: 30px;
+    margin-bottom: 5px;
+    font-size: 36px;
     font-family: 8Bit;
     letter-spacing: 0.1em;
     border-radius: 6px;

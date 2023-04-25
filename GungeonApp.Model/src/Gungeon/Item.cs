@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,6 +25,10 @@ namespace GungeonApp.Model
             Type = Model.ItemType.Item;
             Effect = string.Empty;
             ItemType = string.Empty;
+        }
+        public override void ParseDataRecord(IDataRecord dataRecord)
+        {
+            dataRecord.ParseByColumnMap(this);
         }
     }
 }

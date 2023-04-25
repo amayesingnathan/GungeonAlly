@@ -4,12 +4,17 @@ namespace GungeonApp.WebApp.Services
 {
     public interface IGungeonService
     {
-        Task<Gun?> GetGun(int id);
-        Task<Gun[]?> GetGun(string name);
+        Gun? GetGun(int id);
+        Task<Gun?> GetGunAsync(int id);
+        Gun[]? GetGun(string name);
+        Task<Gun[]?> GetGunAsync(string name);
 
-        Task<Item?> GetItem(int id);
-        Task<Item[]?> GetItem(string name);
+        Item? GetItem(int id);
+        Task<Item?> GetItemAsync(int id);
+        Item[]? GetItem(string name);
+        Task<Item[]?> GetItemAsync(string name);
 
-        Task<ItemBase[]?> SearchItem(string name);
+        ItemBase[]? SearchItem(string name);
+        Task<ItemBase[]?> SearchItemAsync(string name);
     }
 }

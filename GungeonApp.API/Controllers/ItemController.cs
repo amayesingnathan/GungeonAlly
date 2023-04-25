@@ -35,7 +35,7 @@ namespace GungeonApp.API.Controllers
                 var item = GungeonDB.GetItem(name);
                 if (item is null || item.Length == 0)
                 {
-                    return BadRequest($"Could not locate gun with name: {name}");
+                    return BadRequest($"Could not locate item with name: {name}");
                 }
 
                 return Ok(item);

@@ -7,12 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GungeonApp.WebScraper", "Gu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GungeonApp.Model", "GungeonApp.Model\GungeonApp.Model.csproj", "{A525D77B-83B6-4B0B-9AFD-017FF5140C7B}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{BB942838-AD69-40CD-9FBB-BE5945D57CD7}"
-	ProjectSection(SolutionItems) = preProject
-		GungeonApp.WebScraper\bin\Debug\net7.0\guns.json = GungeonApp.WebScraper\bin\Debug\net7.0\guns.json
-		GungeonApp.WebScraper\bin\Debug\net7.0\items.json = GungeonApp.WebScraper\bin\Debug\net7.0\items.json
-	EndProjectSection
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GungeonApp.WebApp", "GungeonApp.WebApp\GungeonApp.WebApp.csproj", "{59A54757-95FB-4DBD-835C-D63C9ACCC93E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GungeonApp.DatabaseCore", "GungeonApp.DatabaseCore\GungeonApp.DatabaseCore.csproj", "{3B900190-8BEA-4006-ADFE-5CDF1470B6A7}"

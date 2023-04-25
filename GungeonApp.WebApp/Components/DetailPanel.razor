@@ -1,7 +1,60 @@
-﻿<div style="height: 97%; min-height: 97%" >
-    DetailPanel
+﻿@inject InventoryState State
+@inject IGungeonService GungeonDB
+
+<div class="item-heading centre">
+    @{
+        string name = State.CurrentItemSelected?.ItemName ?? string.Empty;
+    }
+    @name
+</div>
+<div class="item-image-detail centre">
+    <div class="image-frame centre">
+        <InventoryItem Context="@State.CurrentItemSelected" Scale="8" Selectable="false"/>
+    </div>
+    <div class="quote-label centre">
+    @{
+        string quote = State.CurrentItemSelected?.Quote ?? string.Empty;
+    }
+    @quote
+    </div>
+    <div class="itemtype-label centre">
+        @{
+            string type = string.Empty;
+            ItemBase? item = State.CurrentItemSelected;
+
+            if (item != null)
+            {
+                if (item is Gun)
+                {
+                    var test = GungeonDB.GetGun(item.BaseID);
+                    type = test?.GunType ?? string.Empty;
+                }
+                else
+                {
+                    var test = GungeonDB.GetItem(item.BaseID);
+                    type = test?.ItemType ?? string.Empty;
+                }
+            }
+        }
+    @type
+    </div>
+</div>
+<div class="description-label">
+</div>
+<div style="height: 8%; min-height: 8%">
 </div>
 
 @code {
+    [Inject]
+    public IRefreshService RefreshService { get; set; }
 
+    protected override void OnInitialized()
+    {
+        RefreshService.RefreshRequested += OnRefresh;
+    }
+
+    private void OnRefresh()
+    {
+        StateHasChanged();
+    }
 }
