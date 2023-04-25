@@ -111,20 +111,24 @@ a, .btn-link {
     clear: both;
 }
 
+.base-layout {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    height: 99vh
+}
+
 .inventory-panel {
-    float: left;
-    width: 50%;
-    height: 100%;
-    min-height: 100%;
     background-color: #A7A49D;
     background: linear-gradient(270deg, rgba(54,53,53,1) 0%, rgba(167,164,157,1) 2%, rgba(167,164,157,1) 100%);
 }
 
-.item-panel {
-    float: right;
-    width: 50%;
-    height: 100%;
-    min-height: 100%;
+.detail-panel {
     background-color: #A7A49D;
     background: linear-gradient(90deg, rgba(54,53,53,1) 0%, rgba(167,164,157,1) 2%, rgba(167,164,157,1) 100%);
+}
+
+.centre {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

@@ -1,15 +1,9 @@
-﻿@{
-    int count = Context.Count();
-    string activeColumnCount = count < 7 ? count.ToString() : "8";
-    <div style="border-radius: 25px; border: 2px solid; columns: @activeColumnCount auto; margin-left: 5%; margin-right: 5%;">
-        @{
-            foreach (ItemBase activeItem in Context)
-            {
-                <InventoryItem Context="@activeItem" />
-            }
-        }
-    </div>
-}
+﻿<div class="item-panel">
+    @foreach (ItemBase item in Context)
+    {
+        
+    }
+</div>
 
 @code {
     [Parameter]

@@ -1,20 +1,26 @@
-﻿<div class="guns-frame">
-    <div class="inventory-label">
+﻿<div class="equipment-heading centre">
+    Equipment
+</div>
+
+<div class="guns-frame">
+    <div class="inventory-label centre">
         Guns
     </div>
     <InventoryItemPanel Context="@Inventory.Guns.Values" />
 </div>
 <div class="actives-frame">
-    <div class="inventory-label">
+    <div class="inventory-label centre">
         Active Items
     </div>
     <InventoryItemPanel Context="@Inventory.Actives.Values" />
 </div>
 <div class="passives-frame">
-    <div class="inventory-label">
+    <div class="inventory-label centre">
         Passive Items
     </div>
     <InventoryItemPanel Context="@Inventory.Passives.Values" />
+</div>
+<div style="height: 8%; min-height: 8%">
 </div>
 
 @code {
