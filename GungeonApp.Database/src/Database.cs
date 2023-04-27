@@ -15,7 +15,8 @@ namespace GungeonApp.Database
 {
     public static class GungeonDB
     {
-        private const string ConnectionString = @"Server=.\SQLEXPRESS;Database=EtGDB;Trusted_Connection=True;";
+        //private const string ConnectionString = "Server=.\SQLEXPRESS;Database=EtGDB;Trusted_Connection=True;";
+        private const string ConnectionString = "Server=localhost,1433;Database=EtGDB;User Id=SA; Password=&UWlveec123";
         public static void ImportGuns(IEnumerable<Gun> guns)
         {
             try

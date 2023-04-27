@@ -1,9 +1,4 @@
-﻿.detail-layout {
-    display: grid;
-    grid-template-rows: 8% 44% 39% 8%;
-}
-
-.item-heading {
+﻿.item-heading {
     font-size: 28px;
     font-family: 8Bit;
     height: 8%;

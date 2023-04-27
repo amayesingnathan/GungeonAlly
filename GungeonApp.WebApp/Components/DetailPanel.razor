@@ -20,19 +20,17 @@
     <div class="itemtype-label centre">
         @{
             string type = string.Empty;
-            ItemBase? item = State.CurrentItemSelected;
+            ItemBase? item = State.CurrentItemBaseSelected;
 
             if (item != null)
             {
                 if (item is Gun)
                 {
-                    var test = GungeonDB.GetGun(item.BaseID);
-                    type = test?.GunType ?? string.Empty;
+                    type = State.CurrentGunSelected?.GunType ?? string.Empty;
                 }
                 else
                 {
-                    var test = GungeonDB.GetItem(item.BaseID);
-                    type = test?.ItemType ?? string.Empty;
+                    type = State.CurrentItemSelected?.ItemType ?? string.Empty;
                 }
             }
         }
@@ -53,8 +51,9 @@
         RefreshService.RefreshRequested += OnRefresh;
     }
 
-    private void OnRefresh()
+    private async Task OnRefresh()
     {
         StateHasChanged();
+        await Task.CompletedTask;
     }
 }

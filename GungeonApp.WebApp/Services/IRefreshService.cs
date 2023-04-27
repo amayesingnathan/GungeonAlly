@@ -2,7 +2,7 @@
 {
     public interface IRefreshService
     {
-        event Func<Task> RefreshRequested;
-        void RequestRefresh();
+        event Func<Task>? RefreshRequested;
+        Task RequestRefresh();
     }
 }

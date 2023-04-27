@@ -18,6 +18,8 @@
 
 @code {
     [Inject]
+    public IGungeonService GungeonDB { get; set; }
+    [Inject]
     public IRefreshService RefreshService { get; set; }
 
     [Parameter]
@@ -29,12 +31,24 @@
     [Parameter]
     public bool Selectable { get; set; } = true;
 
-    private void OnItemClicked()
+    private async Task OnItemClicked()
     {
-        if (Selectable)
+        if (!Selectable)
+            return;
+            
+        State.CurrentItemBaseSelected = Context;
+        if (Context is Gun)
         {
-            State.CurrentItemSelected = Context;
-            RefreshService.RequestRefresh();
+            State.CurrentItemSelected = null;
+            State.CurrentGunSelected = Context as Gun;
         }
+        else if (Context is Item)
+        {
+            State.CurrentGunSelected = null;
+            State.CurrentItemSelected = Context as Item;
+        }
+
+
+        await RefreshService?.RequestRefresh();
     }
 }
