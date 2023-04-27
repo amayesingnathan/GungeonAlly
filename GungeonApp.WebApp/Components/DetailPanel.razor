@@ -12,13 +12,13 @@
         <div class="image-frame">
             <InventoryItem Context="@State.CurrentItemBaseSelected" Scale="8" Selectable="false"/>
         </div>
-        <div class="quote-label centre">
+        <div class="quote-label">
         @{
             string quote = State.CurrentItemBaseSelected?.Quote ?? string.Empty;
         }
         @quote
         </div>
-        <div class="itemtype-label centre">
+        <div class="itemtype-label">
             @{
                 string type = string.Empty;
                 ItemBase? item = State.CurrentItemBaseSelected;
@@ -39,9 +39,16 @@
         </div>
     </div>
     <div class="description-label">
-        
+        @{
+            string desc = State.CurrentItemBaseSelected?.Description ?? string.Empty;
+            foreach (string paragraph in desc.Split('\n'))
+            {
+                <p>@paragraph</p>
+                <br/>
+            }
+        }
     </div>
-    <div class="fill-space">
+    <div>
     </div>
 </div>
 
