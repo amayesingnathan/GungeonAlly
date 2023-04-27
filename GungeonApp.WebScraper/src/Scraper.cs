@@ -9,6 +9,7 @@ using System.Data;
 using HtmlAgilityPack;
 
 using GungeonApp.Model;
+using GungeonApp.Database;
 
 namespace GungeonApp.WebScraper
 {
@@ -30,6 +31,14 @@ namespace GungeonApp.WebScraper
             var nodes = doc.DocumentNode.SelectNodes("//table[@class='wikitable sortable']//tr");
 
             return ExtractDataFromHtml<Item>(nodes);
+        }
+        public static void GetDescData()
+        {
+            foreach (ItemBase item in GungeonDB.GetAllItems())
+            {
+                ExtractDescriptionData(item);
+                GungeonDB.SetColumnValue(item.BaseID, "Description", item.Description);
+            }
         }
 
         private static IEnumerable<T> ExtractDataFromHtml<T>(HtmlNodeCollection nodes) where T: ItemBase, new()
@@ -79,6 +88,15 @@ namespace GungeonApp.WebScraper
             }
 
             return data;
+        }
+    
+        private static void ExtractDescriptionData(ItemBase item)
+        {
+            string itemUrl = $"https://enterthegungeon.fandom.com/wiki/{item.ItemName.Replace(' ', '_')}";
+            HtmlWeb web = new HtmlWeb();
+            HtmlDocument doc = web.Load(itemUrl);
+            var desc = doc.DocumentNode.SelectSingleNode("//td[@class='ammonomicon-desc']");
+            item.Description = desc.InnerText;
         }
     }
 }

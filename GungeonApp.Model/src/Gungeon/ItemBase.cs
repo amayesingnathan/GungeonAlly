@@ -42,6 +42,9 @@ namespace GungeonApp.Model
         [DataName("Quality", LoadType.QualityURL)]
         public Quality Quality { get; set; }
 
+        [ColumnMap("Description")]
+        public string Description { get; set; }
+
         public virtual void ParseDataRecord(IDataRecord dataRecord)
         {
             dataRecord.ParseByColumnMap(this);
@@ -55,6 +58,7 @@ namespace GungeonApp.Model
             ItemName = string.Empty;
             Quote = string.Empty;
             Quality = Quality.N;
+            Description = string.Empty;
         }
         public ItemBase(Gun gun)
         {
@@ -64,6 +68,7 @@ namespace GungeonApp.Model
             ImageData = gun.ImageData;
             Quality = gun.Quality;
             Quote = gun.Quote;
+            Description = gun.Description;
         }
         public ItemBase(Item item)
         {
@@ -73,6 +78,7 @@ namespace GungeonApp.Model
             ImageData = item.ImageData;
             Quality = item.Quality;
             Quote = item.Quote;
+            Description = item.Description;
         }
     }
 }

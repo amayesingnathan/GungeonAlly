@@ -17,6 +17,48 @@ namespace GungeonApp.Database
     {
         //private const string ConnectionString = "Server=.\SQLEXPRESS;Database=EtGDB;Trusted_Connection=True;";
         private const string ConnectionString = "Server=localhost,1433;Database=EtGDB;User Id=SA; Password=&UWlveec123";
+
+        public static bool IsDBBaseInitialised()
+        {
+            try
+            {
+                DatabaseConnection db = new DatabaseConnection(ConnectionString);
+
+                using (var dbc = db.GetDbConnection())
+                {
+                    string commandString = "select count(BaseID) from dbo.BaseItems";
+                    int resultCount = (int)db.ExecuteScalar(dbc, commandString);
+                    return resultCount > 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return false;
+            }
+        }
+        public static bool IsDBDetailInitialised()
+        {
+            try
+            {
+                DatabaseConnection db = new DatabaseConnection(ConnectionString);
+
+                using (var dbc = db.GetDbConnection())
+                {
+                    string commandString = "select top 1 * from dbo.BaseItems";
+                    var results = db.ExecuteReaderAsEnumerable<ItemBase>(dbc, commandString);
+
+                    var desc = results.FirstOrDefault()?.Description ?? string.Empty;
+                    return desc.Length != 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return false;
+            }
+        }
+
         public static void ImportGuns(IEnumerable<Gun> guns)
         {
             try
@@ -51,6 +93,25 @@ namespace GungeonApp.Database
             {
                 Console.WriteLine(ex.ToString());
                 return;
+            }
+        }
+
+        public static ItemBase[] GetAllItems()
+        {
+            try
+            {
+                DatabaseConnection db = new DatabaseConnection(ConnectionString);
+
+                using (var dbc = db.GetDbConnection())
+                {
+                    string commandString = "select * from dbo.BaseItems bi";
+                    return db.ExecuteReaderAsEnumerable<ItemBase>(dbc, commandString).ToArray();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return new ItemBase[0];
             }
         }
 
@@ -202,6 +263,33 @@ namespace GungeonApp.Database
             }
         }
 
+        public static void SetColumnValue(int id, string column, object value)
+        {
+            try
+            {
+                DatabaseConnection db = new DatabaseConnection(ConnectionString);
+
+                using (var dbc = db.GetDbConnection())
+                {
+                    string commandString = $@"
+                                update dbo.BaseItems
+                                    set {column} = @Value
+                                where
+                                    BaseID = @ID;    
+                            ";
+
+                    var cmd = dbc.CreateCommand(commandString);
+                    var idParam = new SqlParameter("@ID", SqlDbType.Int) { Value = id };
+                    var valueParam = new SqlParameter("@Value", SqlDbType.NVarChar, -1) { Value = value };
+                    cmd.AddParameters(idParam, valueParam);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+        }
 
         private static void InsertToBaseItemTable(DbConnection dbc, IEnumerable<ItemBase> items)
         {
