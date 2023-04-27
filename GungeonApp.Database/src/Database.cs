@@ -287,24 +287,27 @@ namespace GungeonApp.Database
         {
             string commandString = $@"
                         insert into dbo.Items
-                            (BaseID, ItemEffect)
+                            (BaseID, ItemEffect, ItemType)
                         values
-                            (@ID, @Effect);    
+                            (@ID, @Effect, @Type);    
                     ";
 
             var cmd = dbc.CreateCommand(commandString);
             var id = new SqlParameter("@ID", SqlDbType.Int);
+            var type = new SqlParameter("@Type", SqlDbType.NVarChar, -1);
             var effect = new SqlParameter("@Effect", SqlDbType.NVarChar, -1);
-            cmd.AddParameters(id, effect);
+            cmd.AddParameters(id, type, effect);
             cmd.Prepare();
 
             foreach (var item in items)
             {
                 id.Value = item.BaseID;
+                type.Value = item.ItemType;
                 effect.Value = item.Effect;
 
                 cmd.ExecuteNonQuery();
             }
+
         }
     }
 }
