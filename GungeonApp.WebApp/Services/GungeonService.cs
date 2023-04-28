@@ -78,7 +78,7 @@ namespace GungeonApp.WebApp.Services
             }
         }
 
-        public async Task<Gun[]?> GetGunAsync(string name)
+        public async Task<Gun[]> GetGunAsync(string name)
         {
             try
             {
@@ -89,12 +89,12 @@ namespace GungeonApp.WebApp.Services
                     Console.WriteLine("Could not retrieve resource at {0}", endpoint);
                 }
 
-                return gun;
+                return gun ?? new Gun[0];
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error: {ex}");
-                return null;
+                return new Gun[0];
             }
         }
 
@@ -158,7 +158,7 @@ namespace GungeonApp.WebApp.Services
             }
         }
 
-        public async Task<Item[]?> GetItemAsync(string name)
+        public async Task<Item[]> GetItemAsync(string name)
         {
             try
             {
@@ -169,12 +169,12 @@ namespace GungeonApp.WebApp.Services
                     Console.WriteLine("Could not retrieve resource at {0}", endpoint);
                 }
 
-                return item;
+                return item ?? new Item[0];
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error: {ex}");
-                return null;
+                return new Item[0];
             }
         }
 
@@ -198,23 +198,23 @@ namespace GungeonApp.WebApp.Services
             }
         }
 
-        public async Task<ItemBase[]?> SearchItemAsync(string name)
+        public async Task<ItemBase[]> SearchItemAsync(string name)
         {
             try
             {
                 string endpoint = $"{BaseAddress}/search/{name}";
-                var items = await _httpClient.GetFromJsonAsync<Item[]>(endpoint);
+                var items = await _httpClient.GetFromJsonAsync<ItemBase[]>(endpoint);
                 if (items is null)
                 {
                     Console.WriteLine("Could not retrieve resource at {0}", endpoint);
                 }
 
-                return items;
+                return items ?? new ItemBase[0];
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error: {ex}");
-                return null;
+                return new ItemBase[0];
             }
         }
     }

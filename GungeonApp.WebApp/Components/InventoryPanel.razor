@@ -1,55 +1,71 @@
 ﻿@inject InventoryState State
 
-<div class="equipment-heading centre">
-    Equipment
-</div>
+<div class="overflow-container">
+    <div class="equipment-heading centre">
+        Equipment
+    </div>
 
-<div class="guns-frame">
-    <div class="inventory-label centre">
-        Guns
+    <div class="guns-frame">
+        <div class="inventory-label centre">
+            Guns
+        </div>
+        <InventoryItemPanel Context="@State.CurrentInventory.Guns.Values" />
     </div>
-    <InventoryItemPanel Context="@State.CurrentInventory.Guns.Values" />
-</div>
-<div class="actives-frame">
-    <div class="inventory-label centre">
-        Active Items
+    <div class="actives-frame">
+        <div class="inventory-label centre">
+            Active Items
+        </div>
+        <InventoryItemPanel Context="@State.CurrentInventory.Actives.Values" />
     </div>
-    <InventoryItemPanel Context="@State.CurrentInventory.Actives.Values" />
-</div>
-<div class="passives-frame">
-    <div class="inventory-label centre">
-        Passive Items
+    <div class="passives-frame">
+        <div class="inventory-label centre">
+            Passive Items
+        </div>
+        <InventoryItemPanel Context="@State.CurrentInventory.Passives.Values" />
     </div>
-    <InventoryItemPanel Context="@State.CurrentInventory.Passives.Values" />
-</div>
-<div style="height: 8%; min-height: 8%">
+    <div style="height: 8%; min-height: 8%">
+    </div>
 </div>
 
 @code {
+
     [Inject]
-    public IGungeonService GungeonService { get; set; }
+    public IRefreshService RefreshService { get; set; }
+
+    [Inject]
+    public IGungeonService GungeonDB { get; set; }
+
+    protected override void OnInitialized()
+    {
+        RefreshService.RefreshRequested += OnRefresh;
+    }
 
     protected override async Task OnInitializedAsync()
     {
-        State.CurrentInventory.Guns.AddRange(await GungeonService.GetGunAsync("Serious Cannon"));
-        State.CurrentInventory.Guns.AddRange(await GungeonService.GetGunAsync("Stinger"));
-        State.CurrentInventory.Guns.AddRange(await GungeonService.GetGunAsync("Snowballer"));
-        State.CurrentInventory.Guns.AddRange(await GungeonService.GetGunAsync("Eye of the Beholster"));
+        State.CurrentInventory.Guns.AddRange(await GungeonDB.GetGunAsync("Serious Cannon"));
+        State.CurrentInventory.Guns.AddRange(await GungeonDB.GetGunAsync("Stinger"));
+        State.CurrentInventory.Guns.AddRange(await GungeonDB.GetGunAsync("Snowballer"));
+        State.CurrentInventory.Guns.AddRange(await GungeonDB.GetGunAsync("Eye of the Beholster"));
 
-        State.CurrentInventory.Actives.AddRange(await GungeonService.GetItemAsync("Daruma"));
+        State.CurrentInventory.Actives.AddRange(await GungeonDB.GetItemAsync("Daruma"));
 
-        State.CurrentInventory.Passives.AddRange(await GungeonService.GetItemAsync("Obsidian Shell Casing"));
-        State.CurrentInventory.Passives.AddRange(await GungeonService.GetItemAsync("Explosive Rounds"));
-        State.CurrentInventory.Passives.AddRange(await GungeonService.GetItemAsync("Katana Bullets"));
-        State.CurrentInventory.Passives.AddRange(await GungeonService.GetItemAsync("Alpha Bullet"));
-        State.CurrentInventory.Passives.AddRange(await GungeonService.GetItemAsync("Omega Bullets"));
-        State.CurrentInventory.Passives.AddRange(await GungeonService.GetItemAsync("Dog"));
-        State.CurrentInventory.Passives.AddRange(await GungeonService.GetItemAsync("Wolf"));
-        State.CurrentInventory.Passives.AddRange(await GungeonService.GetItemAsync("Backpack"));
-        State.CurrentInventory.Passives.AddRange(await GungeonService.GetItemAsync("Disarming Personality"));
-        State.CurrentInventory.Passives.AddRange(await GungeonService.GetItemAsync("Honeycomb"));
-        State.CurrentInventory.Passives.AddRange(await GungeonService.GetItemAsync("Yellow Chamber"));
-        State.CurrentInventory.Passives.AddRange(await GungeonService.GetItemAsync("Sixth Chamber"));
+        State.CurrentInventory.Passives.AddRange(await GungeonDB.GetItemAsync("Obsidian Shell Casing"));
+        State.CurrentInventory.Passives.AddRange(await GungeonDB.GetItemAsync("Explosive Rounds"));
+        State.CurrentInventory.Passives.AddRange(await GungeonDB.GetItemAsync("Katana Bullets"));
+        State.CurrentInventory.Passives.AddRange(await GungeonDB.GetItemAsync("Alpha Bullet"));
+        State.CurrentInventory.Passives.AddRange(await GungeonDB.GetItemAsync("Omega Bullets"));
+        State.CurrentInventory.Passives.AddRange(await GungeonDB.GetItemAsync("Dog"));
+        State.CurrentInventory.Passives.AddRange(await GungeonDB.GetItemAsync("Wolf"));
+        State.CurrentInventory.Passives.AddRange(await GungeonDB.GetItemAsync("Backpack"));
+        State.CurrentInventory.Passives.AddRange(await GungeonDB.GetItemAsync("Disarming Personality"));
+        State.CurrentInventory.Passives.AddRange(await GungeonDB.GetItemAsync("Honeycomb"));
+        State.CurrentInventory.Passives.AddRange(await GungeonDB.GetItemAsync("Yellow Chamber"));
+        State.CurrentInventory.Passives.AddRange(await GungeonDB.GetItemAsync("Sixth Chamber"));
     }
 
+    private async Task OnRefresh()
+    {
+        StateHasChanged();
+        await Task.CompletedTask;
+    }
 }

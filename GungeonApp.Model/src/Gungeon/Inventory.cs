@@ -14,25 +14,42 @@ namespace GungeonApp.Model
         public Dictionary<int, Item> Actives { get; set; } = new Dictionary<int, Item>();
         public Dictionary<int, Item> Passives { get; set; } = new Dictionary<int, Item>();
 
-        public void Add(Gun gun)
+        public void Add(ItemBase? item)
         {
-            if (Items.ContainsKey(gun.BaseID))
+            if (item is null)
+                return;
+
+            if (Items.ContainsKey(item.BaseID))
             {
-                Console.WriteLine("Inventory already contains this gun!");
+                Console.WriteLine("Inventory already contains this item!");
                 return;
             }
+
+
+            switch (item.Type)
+            {
+                case BaseItemType.Gun:
+                    AddGun(item as Gun);
+                    break;
+
+                case BaseItemType.Item:
+                    AddItem(item as Item);
+                    break;
+            }
+        }
+
+        private void AddGun(Gun? gun)
+        {
+            if (gun == null)
+                return;
 
             Items[gun.BaseID] = gun;
             Guns[gun.BaseID] = gun;
         }
-        public void Add(Item item)
+        private void AddItem(Item? item)
         {
-            if (Items.ContainsKey(item.BaseID))
-            {
-                Console.WriteLine("Inventory already contains this gun!");
+            if (item == null)
                 return;
-            }
-
 
             switch (item.ItemTypeEnum)
             {

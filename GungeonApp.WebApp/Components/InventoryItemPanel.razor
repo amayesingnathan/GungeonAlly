@@ -13,6 +13,20 @@
 </div>
 
 @code {
+
+    [Inject]
+    public IRefreshService RefreshService { get; set; }
+
     [Parameter]
     public IEnumerable<ItemBase> Context { get; set; }
+
+    protected override void OnInitialized()
+    {
+        RefreshService.RefreshRequested += OnRefresh;
+    }
+    private async Task OnRefresh()
+    {
+        StateHasChanged();
+        await Task.CompletedTask;
+    }
 }

@@ -1,0 +1,74 @@
+@inject InventoryState State
+
+<input type="text" @ref="SearchBar" @bind="@SearchText" @oninput="SearchTextChanged"/>
+@{
+    float remPos = 4;
+    foreach (ItemBase item in SearchItems.Take(5))
+    {
+        string pos = $"{remPos}rem";
+        <div style="
+            position: absolute; 
+            top: @pos; 
+            width: 22%;
+        ">
+            <div class="search-result" @onclick="() => ItemSelected(item)">
+                <InventoryItem Context="@item" Selectable="false" Scale="1.5" />
+                <div style="font-size: 20px !important;">
+                    @item.ItemName
+                </div>
+                <div>
+                    @item.Quality.ToString()
+                </div>
+            </div>
+        </div>
+
+        remPos += 3.2f;
+    }
+}
+
+@code {
+    [Inject]
+    public IGungeonService GungeonDB { get; set; }
+    [Inject]
+    public IRefreshService RefreshService { get; set; }
+
+
+    private ElementReference SearchBar;
+    
+    public string SearchText { get; set; } = string.Empty;
+
+    public ItemBase[] SearchItems { get; set; } = new ItemBase[0];
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (State.ViewType == DisplayType.Search)
+        {
+            await SearchBar.FocusAsync();
+        }
+    }
+
+    private async Task SearchTextChanged(ChangeEventArgs e)
+    {
+        SearchText = e.Value as string ?? string.Empty; 
+        SearchItems = await GungeonDB.SearchItemAsync(SearchText);
+    }
+
+    private async Task ItemSelected(ItemBase item)
+    {
+        State.ViewType = DisplayType.AddInProgress;
+        
+        switch (item.Type)
+        {
+            case BaseItemType.Item:
+                State.CurrentItemSelected = await GungeonDB.GetItemAsync(item.BaseID);
+                break;
+
+            case BaseItemType.Gun:
+                State.CurrentItemSelected = await GungeonDB.GetGunAsync(item.BaseID);
+                break;
+        }
+
+        await RefreshService.RequestRefresh();
+    }
+
+}

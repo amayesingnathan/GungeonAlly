@@ -12,8 +12,8 @@
     margin-top: 4px;
     margin-left: 9%;
     margin-right: 9%;
-    border-top: 2px solid #201d2f;
-    border-bottom: 6px double #201d2f;
+    border-top: 2px solid #343147;
+    border-bottom: 6px double #343147;
 }
 
 .item-image-detail {
@@ -36,7 +36,7 @@
 }
 
 .quote-label {
-    background-color: #FCF6D6;
+    background-color: #fbf2d5;
     font-size: 26px;
     font-family: Pixeloid;
     color: black;
@@ -48,7 +48,7 @@
 }
 
 .itemtype-label {
-    background-color: #FCF6D6;
+    background-color: #fbf2d5;
     font-size: 26px;
     font-family: Pixeloid;
     color: black;
@@ -61,8 +61,8 @@
 }
 
 .description-label {
-    border-top: 6px double #201d2f;
-    border-bottom: 6px double #201d2f;
+    border-top: 6px double #343147;
+    border-bottom: 6px double #343147;
     font-size: 32px;
     font-family: Pixeloid;
     margin-left: 9%;
@@ -72,4 +72,32 @@
     padding-left: 12px;
     padding-right: 12px;
     overflow-y: scroll;
+    color: #343147;
+}
+
+.action-buttons-panel {
+    display: flex;
+    justify-content: flex-start;
+    column-gap: 4px;
+    align-items: center;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    margin-left: 9%;
+    margin-right: 9%;
+}
+
+.action-button {
+    height: 100%;
+    aspect-ratio: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid;
+    border-radius: 20px;
+    background-color: #cbb959;
+}
+
+.disabled {
+    pointer-events: none;
+    opacity: 0.4;
 }

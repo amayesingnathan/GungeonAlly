@@ -46,5 +46,9 @@
     border-color: white;
     border-width: 4px;
     border-style: ridge;
-    outline: 2px solid #201d2f;
+    outline: 2px solid #343147;
+}
+
+.overflow-container {
+    overflow-y: scroll;
 }

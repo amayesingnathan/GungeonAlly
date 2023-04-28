@@ -2,11 +2,19 @@
 
 namespace GungeonApp.WebApp.State
 {
+    public enum DisplayType
+    {
+        Selection, Search, AddInProgress
+    }
     public class InventoryState
     {
+        public DisplayType ViewType { get; set; } = DisplayType.Selection;
         public Inventory CurrentInventory { get; set; } = new Inventory();
-        public ItemBase? CurrentItemBaseSelected { get; set; }
-        public Gun? CurrentGunSelected { get; set; }
-        public Item? CurrentItemSelected { get; set; }
+        public ItemBase? CurrentItemSelected { get; set; }
+        
+        public void ClearSelection()
+        {
+            CurrentItemSelected = null;
+        }
     }
 }

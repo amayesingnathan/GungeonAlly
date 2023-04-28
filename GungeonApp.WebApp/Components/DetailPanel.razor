@@ -2,36 +2,50 @@
 @inject IGungeonService GungeonDB
 
 <div class="detail-layout">
-    <div class="item-heading centre">
-        @{
-            string name = State.CurrentItemBaseSelected?.ItemName ?? string.Empty;
-        }
-        @name
-    </div>
+    @{
+        <div class="item-heading centre">
+            @{
+                switch (State.ViewType)
+                {
+                    case DisplayType.Selection:
+                    case DisplayType.AddInProgress:
+                        string name = State.CurrentItemSelected?.ItemName ?? string.Empty;
+                        @name
+                        break;
+
+                    case DisplayType.Search:
+                        <ItemSearch/>
+                        break;
+                }
+            }
+        </div>
+    }
     <div class="item-image-detail">
         <div class="image-frame">
-            <InventoryItem Context="@State.CurrentItemBaseSelected" Scale="8" Selectable="false"/>
+            <InventoryItem Context="@State.CurrentItemSelected" Scale="8" Selectable="false"/>
         </div>
         <div class="quote-label">
         @{
-            string quote = State.CurrentItemBaseSelected?.Quote ?? string.Empty;
+            string quote = State.CurrentItemSelected?.Quote ?? string.Empty;
         }
         @quote
         </div>
         <div class="itemtype-label">
             @{
                 string type = string.Empty;
-                ItemBase? item = State.CurrentItemBaseSelected;
+                ItemBase? item = State.CurrentItemSelected;
 
                 if (item != null)
                 {
-                    if (item is Gun)
+                    switch (item.Type)
                     {
-                        type = State.CurrentGunSelected?.GunType ?? string.Empty;
-                    }
-                    else
-                    {
-                        type = State.CurrentItemSelected?.ItemType ?? string.Empty;
+                        case BaseItemType.Gun:
+                            type = (State.CurrentItemSelected as Gun)?.GunType ?? string.Empty;
+                            break;
+                        case BaseItemType.Item:
+                            type = (State.CurrentItemSelected as Item)?.ItemType ?? string.Empty;
+                            break;
+
                     }
                 }
             }
@@ -40,7 +54,7 @@
     </div>
     <div class="description-label">
         @{
-            string desc = State.CurrentItemBaseSelected?.Description ?? string.Empty;
+            string desc = State.CurrentItemSelected?.Description ?? string.Empty;
             var sections = desc.Split('\n').Where(x => x.Length != 0);
             foreach (string paragraph in sections)
             {
@@ -52,11 +66,31 @@
             }
         }
     </div>
-    <div>
+    <div class="action-buttons-panel">
+        @{
+            string searchClass = State.ViewType == DisplayType.Selection ? "action-button" : "action-button disabled";
+            <div class="@searchClass" @onclick="SearchButtonClick">
+                <div class="oi oi-magnifying-glass h1">
+                </div>
+            </div>
+
+            string addClass = State.ViewType == DisplayType.AddInProgress ? "action-button" : "action-button disabled";
+            <div class="@addClass" @onclick="AddButtonClick">
+                <div class="oi oi-plus h1">
+                </div>
+            </div>
+            
+            string cancelClass = State.ViewType != DisplayType.Selection ? "action-button" : "action-button disabled";
+            <div class="@cancelClass" @onclick="CancelButtonClick">
+                <div class="oi oi-circle-x h1">
+                </div>
+            </div>
+        }
     </div>
 </div>
 
 @code {
+
     [Inject]
     public IRefreshService RefreshService { get; set; }
 
@@ -64,10 +98,33 @@
     {
         RefreshService.RefreshRequested += OnRefresh;
     }
-
     private async Task OnRefresh()
     {
         StateHasChanged();
         await Task.CompletedTask;
+    }
+
+    private async Task SearchButtonClick()
+    {
+        State.ClearSelection();
+        State.ViewType = DisplayType.Search;
+
+        await RefreshService.RequestRefresh();
+    }
+
+    private async Task AddButtonClick()
+    {
+        State.ViewType = DisplayType.Selection;
+        State.CurrentInventory.Add(State.CurrentItemSelected);
+
+        await RefreshService.RequestRefresh();
+    }
+
+    private async Task CancelButtonClick()
+    {
+        State.ViewType = DisplayType.Selection;
+        State.CurrentItemSelected = State.CurrentInventory.Guns.FirstOrDefault().Value;
+
+        await RefreshService.RequestRefresh();
     }
 }

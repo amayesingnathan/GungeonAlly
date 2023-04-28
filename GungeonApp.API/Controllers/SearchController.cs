@@ -13,7 +13,7 @@ namespace GungeonApp.API.Controllers
             try
             {
                 var items = GungeonDB.MatchItem(name);
-                if (items is null || items.Length == 0)
+                if (items is null)
                 {
                     return BadRequest($"Could not locate any items matching name: {name}");
                 }
