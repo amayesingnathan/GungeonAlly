@@ -10,7 +10,7 @@ using GungeonApp.DatabaseCore.ColumnAttribute;
 
 namespace GungeonApp.Model
 {
-    public enum ItemType
+    public enum BaseItemType
     {
         None, Gun, Item
     }
@@ -32,7 +32,7 @@ namespace GungeonApp.Model
         public string ItemName { get; set; }
 
         [ColumnMap("Type")]
-        public ItemType Type { get; set; }
+        public BaseItemType Type { get; set; }
 
         [ColumnMap("Quote")]
         [DataName("Quote")]
@@ -53,7 +53,7 @@ namespace GungeonApp.Model
         public ItemBase()
         {
             BaseID = int.MaxValue;
-            Type = ItemType.None;
+            Type = BaseItemType.None;
             ImageData = new byte[0];
             ItemName = string.Empty;
             Quote = string.Empty;
@@ -64,7 +64,7 @@ namespace GungeonApp.Model
         {
             BaseID = gun.BaseID;
             ItemName = gun.ItemName;
-            Type = ItemType.Gun;
+            Type = BaseItemType.Gun;
             ImageData = gun.ImageData;
             Quality = gun.Quality;
             Quote = gun.Quote;
@@ -74,7 +74,7 @@ namespace GungeonApp.Model
         {
             BaseID = item.BaseID;
             ItemName = item.ItemName;
-            Type = ItemType.Item;
+            Type = BaseItemType.Item;
             ImageData = item.ImageData;
             Quality = item.Quality;
             Quote = item.Quote;

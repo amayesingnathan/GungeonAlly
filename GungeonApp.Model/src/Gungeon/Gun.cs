@@ -64,7 +64,7 @@ namespace GungeonApp.Model
         public string Class { get; set; }
         public Gun()
         {
-            Type = ItemType.Gun;
+            Type = BaseItemType.Gun;
             Notes = string.Empty;
             DPS = string.Empty;
             MagSize = string.Empty;

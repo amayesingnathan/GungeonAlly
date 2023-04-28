@@ -10,6 +10,11 @@ using GungeonApp.DatabaseCore.ColumnAttribute;
 
 namespace GungeonApp.Model
 {
+    public enum ItemTypes
+    {
+        Passive, Active, Invalid
+    }
+
     public class Item : ItemBase
     {
         [ColumnMap("ItemEffect")]
@@ -20,9 +25,22 @@ namespace GungeonApp.Model
         [DataName("Type")]
         public string ItemType { get; set; }
 
+        public ItemTypes ItemTypeEnum
+        {
+            get 
+            {
+                ItemTypes result;
+                if (!Enum.TryParse(ItemType, out result))
+                {
+                    return ItemTypes.Invalid;
+                }
+                return result;
+            }
+        }
+
         public Item()
         {
-            Type = Model.ItemType.Item;
+            Type = BaseItemType.Item;
             Effect = string.Empty;
             ItemType = string.Empty;
         }
