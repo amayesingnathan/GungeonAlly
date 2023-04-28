@@ -41,11 +41,11 @@
     <div class="description-label">
         @{
             string desc = State.CurrentItemBaseSelected?.Description ?? string.Empty;
-            string[] sections = desc.Split('\n');
+            var sections = desc.Split('\n').Where(x => x.Length != 0);
             foreach (string paragraph in sections)
             {
                 <p>@paragraph</p>
-                if (paragraph != sections.Last())
+                if (!paragraph.Equals(sections.Last()))
                 {
                     <br>
                 }
