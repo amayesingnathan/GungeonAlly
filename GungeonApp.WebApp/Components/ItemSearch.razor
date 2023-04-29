@@ -49,8 +49,10 @@
 
     private async Task SearchTextChanged(ChangeEventArgs e)
     {
-        SearchText = e.Value as string ?? string.Empty; 
-        SearchItems = await GungeonDB.SearchItemAsync(SearchText);
+        SearchText = e.Value as string ?? string.Empty;
+        SearchItems = (await GungeonDB.SearchItemAsync(SearchText))
+                        .Except(State.CurrentInventory.Items, new ItemComparer())
+                        .ToArray();
     }
 
     private async Task ItemSelected(ItemBase item)

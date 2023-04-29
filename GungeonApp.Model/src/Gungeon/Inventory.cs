@@ -9,17 +9,25 @@ namespace GungeonApp.Model
 {
     public class Inventory
     {
-        public Dictionary<int, ItemBase> Items { get; set; } = new Dictionary<int, ItemBase>();
-        public Dictionary<int, Gun> Guns { get; set; } = new Dictionary<int, Gun>();
-        public Dictionary<int, Item> Actives { get; set; } = new Dictionary<int, Item>();
-        public Dictionary<int, Item> Passives { get; set; } = new Dictionary<int, Item>();
+        private Dictionary<int, ItemBase> _Items = new Dictionary<int, ItemBase>();
+        private Dictionary<int, Gun> _Guns = new Dictionary<int, Gun>();
+        private Dictionary<int, Item> _Actives = new Dictionary<int, Item>();
+        private Dictionary<int, Item> _Passives = new Dictionary<int, Item>();
+
+        public IEnumerable<ItemBase> Items { get { return _Items.Values; }}
+        public IEnumerable<Gun> Guns { get { return _Guns.Values; }}
+        public IEnumerable<Item> Actives { get { return _Actives.Values; }}
+        public IEnumerable<Item> Passives { get { return _Passives.Values; }}
 
         public void Add(ItemBase? item)
         {
             if (item is null)
                 return;
 
-            if (Items.ContainsKey(item.BaseID))
+            if (item is not Gun && item is not Item)
+                return;
+
+            if (_Items.ContainsKey(item.BaseID))
             {
                 Console.WriteLine("Inventory already contains this item!");
                 return;
@@ -38,13 +46,21 @@ namespace GungeonApp.Model
             }
         }
 
+        public void AddRange(IEnumerable<ItemBase> items)
+        {
+            foreach (ItemBase item in items)
+            {
+                Add(item);
+            }
+        }
+
         private void AddGun(Gun? gun)
         {
             if (gun == null)
                 return;
 
-            Items[gun.BaseID] = gun;
-            Guns[gun.BaseID] = gun;
+            _Items[gun.BaseID] = gun;
+            _Guns[gun.BaseID] = gun;
         }
         private void AddItem(Item? item)
         {
@@ -58,29 +74,29 @@ namespace GungeonApp.Model
                     return;
 
                 case ItemTypes.Passive:
-                    Passives[item.BaseID] = item;
+                    _Passives[item.BaseID] = item;
                     break;
 
                 case ItemTypes.Active:
-                    Actives[item.BaseID] = item;
+                    _Actives[item.BaseID] = item;
                     break;
             }
 
-            Items[item.BaseID] = item;
+            _Items[item.BaseID] = item;
         }
 
         public void Remove(int itemID)
         {
-            Items.Remove(itemID);
-            Guns.Remove(itemID);
-            Passives.Remove(itemID);
-            Actives.Remove(itemID);
+            _Items.Remove(itemID);
+            _Guns.Remove(itemID);
+            _Passives.Remove(itemID);
+            _Actives.Remove(itemID);
         }
 
         public bool HasSynergy(Synergy trySynergy)
         {
-            return trySynergy.RequireAll.All(x => Items.Any(y => x.BaseID == y.Key)) &&
-                trySynergy.RequireOne.Any(x => Items.Any(y => x.BaseID == y.Key));
+            return trySynergy.RequireAll.All(x => _Items.Any(y => x.BaseID == y.Key)) &&
+                trySynergy.RequireOne.Any(x => _Items.Any(y => x.BaseID == y.Key));
         }
     }
 }

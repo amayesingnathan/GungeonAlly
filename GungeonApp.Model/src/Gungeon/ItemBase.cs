@@ -81,4 +81,22 @@ namespace GungeonApp.Model
             Description = item.Description;
         }
     }
+
+    public class ItemComparer : IEqualityComparer<ItemBase>
+    {
+        public bool Equals(ItemBase? a, ItemBase? b)
+        {
+            if (a == null && b == null)
+                return true;
+            else if (a == null || b == null)
+                return false;
+
+            return a.BaseID == b.BaseID;
+        }
+
+        public int GetHashCode(ItemBase a)
+        {
+            return a.BaseID.GetHashCode();
+        }
+    } 
 }

@@ -123,7 +123,7 @@
     private async Task CancelButtonClick()
     {
         State.ViewType = DisplayType.Selection;
-        State.CurrentItemSelected = State.CurrentInventory.Guns.FirstOrDefault().Value;
+        State.CurrentItemSelected = State.CurrentInventory.Guns.FirstOrDefault();
 
         await RefreshService.RequestRefresh();
     }

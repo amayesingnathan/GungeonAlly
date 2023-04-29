@@ -9,19 +9,19 @@
         <div class="inventory-label centre">
             Guns
         </div>
-        <InventoryItemPanel Context="@State.CurrentInventory.Guns.Values" />
+        <InventoryItemPanel Context="@State.CurrentInventory.Guns" />
     </div>
     <div class="actives-frame">
         <div class="inventory-label centre">
             Active Items
         </div>
-        <InventoryItemPanel Context="@State.CurrentInventory.Actives.Values" />
+        <InventoryItemPanel Context="@State.CurrentInventory.Actives" />
     </div>
     <div class="passives-frame">
         <div class="inventory-label centre">
             Passive Items
         </div>
-        <InventoryItemPanel Context="@State.CurrentInventory.Passives.Values" />
+        <InventoryItemPanel Context="@State.CurrentInventory.Passives" />
     </div>
     <div style="height: 8%; min-height: 8%">
     </div>
@@ -42,25 +42,25 @@
 
     protected override async Task OnInitializedAsync()
     {
-        State.CurrentInventory.Guns.AddRange(await GungeonDB.GetGunAsync("Serious Cannon"));
-        State.CurrentInventory.Guns.AddRange(await GungeonDB.GetGunAsync("Stinger"));
-        State.CurrentInventory.Guns.AddRange(await GungeonDB.GetGunAsync("Snowballer"));
-        State.CurrentInventory.Guns.AddRange(await GungeonDB.GetGunAsync("Eye of the Beholster"));
+        State.CurrentInventory.AddRange(await GungeonDB.GetGunAsync("Serious Cannon"));
+        State.CurrentInventory.AddRange(await GungeonDB.GetGunAsync("Stinger"));
+        State.CurrentInventory.AddRange(await GungeonDB.GetGunAsync("Snowballer"));
+        State.CurrentInventory.AddRange(await GungeonDB.GetGunAsync("Eye of the Beholster"));
 
-        State.CurrentInventory.Actives.AddRange(await GungeonDB.GetItemAsync("Daruma"));
+        State.CurrentInventory.AddRange(await GungeonDB.GetItemAsync("Daruma"));
 
-        State.CurrentInventory.Passives.AddRange(await GungeonDB.GetItemAsync("Obsidian Shell Casing"));
-        State.CurrentInventory.Passives.AddRange(await GungeonDB.GetItemAsync("Explosive Rounds"));
-        State.CurrentInventory.Passives.AddRange(await GungeonDB.GetItemAsync("Katana Bullets"));
-        State.CurrentInventory.Passives.AddRange(await GungeonDB.GetItemAsync("Alpha Bullet"));
-        State.CurrentInventory.Passives.AddRange(await GungeonDB.GetItemAsync("Omega Bullets"));
-        State.CurrentInventory.Passives.AddRange(await GungeonDB.GetItemAsync("Dog"));
-        State.CurrentInventory.Passives.AddRange(await GungeonDB.GetItemAsync("Wolf"));
-        State.CurrentInventory.Passives.AddRange(await GungeonDB.GetItemAsync("Backpack"));
-        State.CurrentInventory.Passives.AddRange(await GungeonDB.GetItemAsync("Disarming Personality"));
-        State.CurrentInventory.Passives.AddRange(await GungeonDB.GetItemAsync("Honeycomb"));
-        State.CurrentInventory.Passives.AddRange(await GungeonDB.GetItemAsync("Yellow Chamber"));
-        State.CurrentInventory.Passives.AddRange(await GungeonDB.GetItemAsync("Sixth Chamber"));
+        State.CurrentInventory.AddRange(await GungeonDB.GetItemAsync("Obsidian Shell Casing"));
+        State.CurrentInventory.AddRange(await GungeonDB.GetItemAsync("Explosive Rounds"));
+        State.CurrentInventory.AddRange(await GungeonDB.GetItemAsync("Katana Bullets"));
+        State.CurrentInventory.AddRange(await GungeonDB.GetItemAsync("Alpha Bullet"));
+        State.CurrentInventory.AddRange(await GungeonDB.GetItemAsync("Omega Bullets"));
+        State.CurrentInventory.AddRange(await GungeonDB.GetItemAsync("Dog"));
+        State.CurrentInventory.AddRange(await GungeonDB.GetItemAsync("Wolf"));
+        State.CurrentInventory.AddRange(await GungeonDB.GetItemAsync("Backpack"));
+        State.CurrentInventory.AddRange(await GungeonDB.GetItemAsync("Disarming Personality"));
+        State.CurrentInventory.AddRange(await GungeonDB.GetItemAsync("Honeycomb"));
+        State.CurrentInventory.AddRange(await GungeonDB.GetItemAsync("Yellow Chamber"));
+        State.CurrentInventory.AddRange(await GungeonDB.GetItemAsync("Sixth Chamber"));
     }
 
     private async Task OnRefresh()
