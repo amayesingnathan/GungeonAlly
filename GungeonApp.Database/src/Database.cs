@@ -398,7 +398,6 @@ namespace GungeonApp.Database
 
                 cmd.ExecuteNonQuery();
             }
-
         }
     }
 }

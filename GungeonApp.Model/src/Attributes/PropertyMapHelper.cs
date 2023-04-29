@@ -53,9 +53,14 @@ namespace GungeonApp.Model
                     return;
                 }
 
-                var qualityChar = url[7].First().ToString();
+                var qualityStr = url[7].Split('_').First().ToString();
+                if (qualityStr.Length > 1)
+                {
+                    qualityStr = qualityStr[1].ToString();
+                }
+
                 Quality qual;
-                if (Enum.TryParse(qualityChar, out qual))
+                if (Enum.TryParse(qualityStr, out qual))
                 {
                     prop.SetValue(entity, qual, null);
                 }

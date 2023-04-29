@@ -49,10 +49,11 @@ namespace GungeonApp.Model
             {
                 if (++i % (max / 10) == 0)
                 {
-                    Console.WriteLine("{0}% complete...", percent);
+                    Console.WriteLine("{0}s {1}% complete...", typeof(TEntity).Name, percent);
                     percent += 10;
                 }
 
+                var test = row[1] as string;
                 TEntity entity = new TEntity();
                 foreach (var prop in properties)
                 {

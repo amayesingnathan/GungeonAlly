@@ -34,8 +34,17 @@ namespace GungeonApp.WebScraper
         }
         public static void GetDescData()
         {
-            foreach (ItemBase item in GungeonDB.GetAllItems())
+            var items = GungeonDB.GetAllItems();
+            int i = 0; int max = items.Length; int percent = 0;
+
+            foreach (ItemBase item in items)
             {
+                if (++i % (max / 10) == 0)
+                {
+                    Console.WriteLine("Descriptions {0}% complete...", percent);
+                    percent += 10;
+                }
+
                 ExtractDescriptionData(item);
                 GungeonDB.SetColumnValue(item.BaseID, "Description", item.Description);
             }
