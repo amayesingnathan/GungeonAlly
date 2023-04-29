@@ -253,7 +253,10 @@ namespace GungeonApp.Database
                 using (var dbc = db.GetDbConnection())
                 {
                     string commandString = $"select * from dbo.BaseItems where ItemName like '%{itemName}%'";
-                    return db.ExecuteReaderAsEnumerable<ItemBase>(dbc, commandString).OrderBy(x => x.ItemName).ToArray();
+                    return db.ExecuteReaderAsEnumerable<ItemBase>(dbc, commandString)
+                        .OrderBy(x => !x.ItemName.StartsWith(itemName, StringComparison.OrdinalIgnoreCase))
+                        .ThenBy(x => x.ItemName)
+                        .ToArray();
                 }
             }
             catch (Exception ex)
