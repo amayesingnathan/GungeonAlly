@@ -9,7 +9,16 @@
             int height = (int)Math.Round(image.Height * Scale);
             image.Mutate(x => x.Resize(width, height, KnownResamplers.NearestNeighbor));
 
-            <div style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;" 
+            string css = "width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;";
+            if (Shadow)
+                css += " filter: drop-shadow(0px 35px 12px rgba(0, 0, 0, 0.8));";
+            
+            if (Selectable && Context.BaseID == State.CurrentItemSelected?.BaseID)
+            {
+                css += " filter: drop-shadow(0px 0px 10px rgba(226, 176, 9, 1));";
+            }
+
+            <div style="@css" 
                 @onclick="OnItemClicked">
                 <img src="@image.ToBase64String(PngFormat.Instance)"/>
             </div>
@@ -31,6 +40,9 @@
 
     [Parameter]
     public bool Selectable { get; set; } = true;
+
+    [Parameter]
+    public bool Shadow { get; set; } = false;
 
     private async Task OnItemClicked()
     {

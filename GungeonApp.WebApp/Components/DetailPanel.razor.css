@@ -32,7 +32,9 @@
     margin-top: 4px;
     margin-bottom: 4px;
     background-image: url("inventory.png");
-    background-size: auto 100%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;  
 }
 
 .quote-label {
@@ -96,6 +98,10 @@
     border-radius: 20px;
     background-color: #cbb959;
 }
+
+    .action-button:hover {
+        background-color: #6d6224;
+    }
 
 .disabled {
     pointer-events: none;
