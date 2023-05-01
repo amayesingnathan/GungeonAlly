@@ -11,5 +11,7 @@ namespace GungeonApp.WebApp.Services
         Task<Item[]> GetItemAsync(string name);
 
         Task<ItemBase[]> SearchItemAsync(string name);
+
+        Task<Synergy[]> GetSynergiesAsync(int itemID);
     }
 }

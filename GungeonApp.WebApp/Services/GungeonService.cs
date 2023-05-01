@@ -217,5 +217,25 @@ namespace GungeonApp.WebApp.Services
                 return new ItemBase[0];
             }
         }
+
+        public async Task<Synergy[]> GetSynergiesAsync(int itemID)
+        {
+            try
+            {
+                string endpoint = $"{BaseAddress}/synergy/{itemID}";
+                var synergies = await _httpClient.GetFromJsonAsync<Synergy[]>(endpoint);
+                if (synergies is null)
+                {
+                    Console.WriteLine("Could not retrieve resource at {0}", endpoint);
+                }
+
+                return synergies ?? new Synergy[0];
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex}");
+                return new Synergy[0];
+            }
+        }
     }
 }
