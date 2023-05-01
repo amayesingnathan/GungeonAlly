@@ -22,11 +22,6 @@ namespace GungeonApp.WebScraper
                 GungeonDB.ImportGuns(Scraper.GetGunData());
                 GungeonDB.ImportItems(Scraper.GetItemData());
             }
-
-            if (!GungeonDB.IsDBDetailInitialised())
-            {
-                Scraper.GetDescData();
-            }
         }
     }
 }

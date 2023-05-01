@@ -91,9 +91,17 @@ namespace GungeonApp.WebScraper
             var data = DataNameMapper<T>.Map(table)
                 .Where(x => x.Quote.Length != 0);
 
+            int i = 0; int max = table.Rows.Count; int percent = 0;
             foreach (var row in data)
             {
+                if (++i % (max / 10) == 0)
+                {
+                    Console.WriteLine("{0} Descriptions {1}% complete...", typeof(T).Name, percent);
+                    percent += 10;
+                }
+
                 row.BaseID = NextID++;
+                ExtractDescriptionData(row);
             }
 
             return data;
@@ -105,7 +113,7 @@ namespace GungeonApp.WebScraper
             HtmlWeb web = new HtmlWeb();
             HtmlDocument doc = web.Load(itemUrl);
             var desc = doc.DocumentNode.SelectSingleNode("//td[@class='ammonomicon-desc']");
-            item.Description = desc.InnerText;
+            item.Description = desc.InnerText ?? string.Empty;
         }
     }
 }

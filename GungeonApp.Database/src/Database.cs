@@ -15,8 +15,8 @@ namespace GungeonApp.Database
 {
     public static class GungeonDB
     {
-        //private const string ConnectionString = "Server=.\SQLEXPRESS;Database=EtGDB;Trusted_Connection=True;";
-        private const string ConnectionString = "Server=localhost,1433;Database=EtGDB;User Id=SA; Password=&UWlveec123";
+        private const string ConnectionString = @"Server=.\SQLEXPRESS;Database=EtGDB;Trusted_Connection=True;";
+        //private const string ConnectionString = "Server=localhost,1433;Database=EtGDB;User Id=SA; Password=&UWlveec123";
 
         public static bool IsDBBaseInitialised()
         {
@@ -29,27 +29,6 @@ namespace GungeonApp.Database
                     string commandString = "select count(BaseID) from dbo.BaseItems";
                     int resultCount = (int)db.ExecuteScalar(dbc, commandString);
                     return resultCount > 0;
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-                return false;
-            }
-        }
-        public static bool IsDBDetailInitialised()
-        {
-            try
-            {
-                DatabaseConnection db = new DatabaseConnection(ConnectionString);
-
-                using (var dbc = db.GetDbConnection())
-                {
-                    string commandString = "select top 1 * from dbo.BaseItems";
-                    var results = db.ExecuteReaderAsEnumerable<ItemBase>(dbc, commandString);
-
-                    var desc = results.FirstOrDefault()?.Description ?? string.Empty;
-                    return desc.Length != 0;
                 }
             }
             catch (Exception ex)
@@ -298,9 +277,9 @@ namespace GungeonApp.Database
         {
             string commandString = $@"
                         insert into dbo.BaseItems
-                            (BaseID, Type, IconImageData, ItemName, Quote, Quality)
+                            (BaseID, Type, IconImageData, ItemName, Quote, Quality, Description)
                         values
-                            (@ID, @Type, @Image, @Name, @Quote, @Quality);    
+                            (@ID, @Type, @Image, @Name, @Quote, @Quality, @Description);    
                     ";
 
             var cmd = dbc.CreateCommand(commandString);
@@ -310,7 +289,8 @@ namespace GungeonApp.Database
             var name = new SqlParameter("@Name", SqlDbType.NVarChar, -1);
             var quote = new SqlParameter("@Quote", SqlDbType.NVarChar, -1);
             var qual = new SqlParameter("@Quality", SqlDbType.Int);
-            cmd.AddParameters(id, image, type, name, qual, quote);
+            var desc = new SqlParameter("@Description", SqlDbType.NVarChar, -1);
+            cmd.AddParameters(id, image, type, name, qual, quote, desc);
             cmd.Prepare();
 
             foreach (var item in items)
@@ -321,6 +301,7 @@ namespace GungeonApp.Database
                 name.Value = item.ItemName;
                 quote.Value = item.Quote;
                 qual.Value = ((int)item.Quality);
+                desc.Value = item.Description;
 
                 cmd.ExecuteNonQuery();
             }
@@ -385,9 +366,9 @@ namespace GungeonApp.Database
 
             var cmd = dbc.CreateCommand(commandString);
             var id = new SqlParameter("@ID", SqlDbType.Int);
-            var type = new SqlParameter("@Type", SqlDbType.NVarChar, -1);
             var effect = new SqlParameter("@Effect", SqlDbType.NVarChar, -1);
-            cmd.AddParameters(id, type, effect);
+            var type = new SqlParameter("@Type", SqlDbType.NVarChar, -1);
+            cmd.AddParameters(id, effect, type);
             cmd.Prepare();
 
             foreach (var item in items)
