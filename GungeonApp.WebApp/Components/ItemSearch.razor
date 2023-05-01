@@ -1,29 +1,26 @@
 @inject InventoryState State
 
-<input type="text" @ref="SearchBar" @bind="@SearchText" @oninput="SearchTextChanged"/>
 @{
-    float remPos = 4;
-    foreach (ItemBase item in SearchItems.Take(5))
-    {
-        string pos = $"{remPos}rem";
-        <div style="
-            position: absolute; 
-            top: @pos; 
-            width: 22%;
-        ">
-            <div class="search-result" @onclick="() => ItemSelected(item)">
-                <InventoryItem Context="@item" Selectable="false" Scale="1.5" />
-                <div style="font-size: 20px !important;">
-                    @item.ItemName
-                </div>
-                <div>
-                    @item.Quality.ToString()
-                </div>
-            </div>
-        </div>
+    int resultCount = SearchItems.Length < 5 ? SearchItems.Length : 5;
+    string topPos = $"position: absolute; top: -{2.4 + resultCount * 1.2}em;";
+    <div class="popup-container" style="@topPos">
+        <div class="search-results-box">
+            <input type="text" @ref="SearchBar" @bind="@SearchText" @oninput="SearchTextChanged"/>
 
-        remPos += 3.2f;
-    }
+            @foreach (ItemBase item in SearchItems.Take(5))
+            {
+                <div class="search-result" @onclick="() => ItemSelected(item)">
+                    <InventoryItem Context="@item" Selectable="false" Scale="1.5" />
+                    <div style="font-size: 20px !important;">
+                        @item.ItemName
+                    </div>
+                    <div>
+                        @item.Quality.ToString()
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
 }
 
 @code {
@@ -38,14 +35,6 @@
     public string SearchText { get; set; } = string.Empty;
 
     public ItemBase[] SearchItems { get; set; } = new ItemBase[0];
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (State.ViewType == DisplayType.Search)
-        {
-            await SearchBar.FocusAsync();
-        }
-    }
 
     private async Task SearchTextChanged(ChangeEventArgs e)
     {

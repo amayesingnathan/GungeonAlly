@@ -2,24 +2,12 @@
 @inject IGungeonService GungeonDB
 
 <div class="detail-layout">
-    @{
-        <div class="item-heading centre">
-            @{
-                switch (State.ViewType)
-                {
-                    case DisplayType.Selection:
-                    case DisplayType.AddInProgress:
-                        string name = State.CurrentItemSelected?.ItemName ?? string.Empty;
-                        @name
-                        break;
-
-                    case DisplayType.Search:
-                        <ItemSearch/>
-                        break;
-                }
-            }
-        </div>
-    }
+    <div class="item-heading centre">
+        @{
+            string name = State.CurrentItemSelected?.ItemName ?? string.Empty;
+            @name
+        }
+    </div>
     <div class="item-image-detail">
         <div class="image-frame">
             <InventoryItem Context="@State.CurrentItemSelected" Scale="8" Selectable="false" Shadow="true"/>
@@ -27,8 +15,8 @@
         <div class="quote-label">
         @{
             string quote = State.CurrentItemSelected?.Quote ?? string.Empty;
+            @quote
         }
-        @quote
         </div>
         <div class="itemtype-label">
             @{
@@ -48,8 +36,9 @@
 
                     }
                 }
+                
+                @type
             }
-        @type
         </div>
     </div>
     <div class="description-label">
@@ -68,23 +57,26 @@
     </div>
     <div class="action-buttons-panel">
         @{
-            string searchClass = State.ViewType == DisplayType.Selection ? "action-button" : "action-button disabled";
-            <div class="@searchClass" @onclick="SearchButtonClick">
-                <div class="oi oi-magnifying-glass h1">
-                </div>
-            </div>
+            bool disableSearch = State.ViewType != DisplayType.Selection;
+            <DetailPanelButton Icon="oi-magnifying-glass" 
+                Disabled="@disableSearch"
+                ContentTriggerType="DetailPanelButton.TriggerType.OnClick">
+                <Content>
+                    <ItemSearch />
+                </Content>
+            </DetailPanelButton>
 
-            string addClass = State.ViewType == DisplayType.AddInProgress ? "action-button" : "action-button disabled";
-            <div class="@addClass" @onclick="AddButtonClick">
-                <div class="oi oi-plus h1">
-                </div>
-            </div>
-            
-            string cancelClass = State.ViewType != DisplayType.Selection ? "action-button" : "action-button disabled";
-            <div class="@cancelClass" @onclick="CancelButtonClick">
-                <div class="oi oi-circle-x h1">
-                </div>
-            </div>
+            bool disableAdd = State.ViewType != DisplayType.AddInProgress;
+            <DetailPanelButton Icon="oi-plus" 
+                Disabled="@disableAdd" OnClick="AddButtonClick"
+                ContentTriggerType="DetailPanelButton.TriggerType.OnHover">
+                <Content>
+                </Content>
+            </DetailPanelButton>
+
+            bool disableCancel= State.ViewType != DisplayType.AddInProgress;
+            <DetailPanelButton Icon="oi-circle-x" 
+                Disabled="@disableCancel" OnClick="CancelButtonClick"/>
         }
     </div>
 </div>
@@ -102,14 +94,6 @@
     {
         StateHasChanged();
         await Task.CompletedTask;
-    }
-
-    private async Task SearchButtonClick()
-    {
-        State.ClearSelection();
-        State.ViewType = DisplayType.Search;
-
-        await RefreshService.RequestRefresh();
     }
 
     private async Task AddButtonClick()

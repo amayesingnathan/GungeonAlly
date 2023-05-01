@@ -4,7 +4,7 @@ namespace GungeonApp.WebApp.State
 {
     public enum DisplayType
     {
-        Selection, Search, AddInProgress
+        Selection, AddInProgress
     }
     public class InventoryState
     {
