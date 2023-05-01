@@ -22,6 +22,11 @@ namespace GungeonApp.WebScraper
                 GungeonDB.ImportGuns(Scraper.GetGunData());
                 GungeonDB.ImportItems(Scraper.GetItemData());
             }
+
+            if (!GungeonDB.IsDBSynergiesInitialised())
+            {
+                GungeonDB.ImportSynergies(Scraper.GetSynergiesData());
+            }
         }
     }
 }

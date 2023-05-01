@@ -15,14 +15,15 @@ namespace GungeonApp.WebScraper
 {
     public class Scraper
     {
-        public static int NextID = 0;
+        public static int NextItemID = 0;
+        public static int NextSynergyID = 0;
         public static IEnumerable<Gun> GetGunData()
         {
             HtmlWeb web = new HtmlWeb();
             HtmlDocument doc = web.Load("https://enterthegungeon.fandom.com/wiki/Guns");
             var nodes = doc.DocumentNode.SelectNodes("//table[@class='sortable mw-collapsible wikitable']//tr");
 
-            return ExtractDataFromHtml<Gun>(nodes);
+            return ExtractItemDataFromHtml<Gun>(nodes);
         }
         public static IEnumerable<Item> GetItemData()
         {
@@ -30,33 +31,24 @@ namespace GungeonApp.WebScraper
             HtmlDocument doc = web.Load("https://enterthegungeon.fandom.com/wiki/Items");
             var nodes = doc.DocumentNode.SelectNodes("//table[@class='wikitable sortable']//tr");
 
-            return ExtractDataFromHtml<Item>(nodes);
+            return ExtractItemDataFromHtml<Item>(nodes);
         }
-        public static void GetDescData()
+        public static IEnumerable<Synergy> GetSynergiesData()
         {
-            var items = GungeonDB.GetAllItems();
-            int i = 0; int max = items.Length; int percent = 0;
+            HtmlWeb web = new HtmlWeb();
+            HtmlDocument doc = web.Load("https://enterthegungeon.fandom.com/wiki/Synergies");
+            var nodes = doc.DocumentNode.SelectSingleNode("//table[@class='wikitable sortable']//tbody").Elements("tr");
 
-            foreach (ItemBase item in items)
-            {
-                if (++i % (max / 10) == 0)
-                {
-                    Console.WriteLine("Descriptions {0}% complete...", percent);
-                    percent += 10;
-                }
-
-                ExtractDescriptionData(item);
-                GungeonDB.SetColumnValue(item.BaseID, "Description", item.Description);
-            }
+            return ExtractSynergyDataFromHtml(nodes);
         }
 
-        private static IEnumerable<T> ExtractDataFromHtml<T>(HtmlNodeCollection nodes) where T: ItemBase, new()
+        private static IEnumerable<T> ExtractItemDataFromHtml<T>(HtmlNodeCollection nodes) where T: ItemBase, new()
         {
             var table = new DataTable();
 
             IEnumerable<string> headers = nodes[0]
                 .Elements("th")
-                .Select(th => th.InnerText.Replace("\\n", "").Trim())
+                .Select(th => th.InnerText.ReplaceLineEndings("").Trim())
                 .ReplaceNull();
 
             foreach (var header in headers)
@@ -70,9 +62,7 @@ namespace GungeonApp.WebScraper
                     .Elements("td")
                     .Select(td =>
                     {
-                        var trimmed = td.InnerText
-                            .Replace("\n", "")
-                            .Replace("\r", "");
+                        var trimmed = td.InnerText.ReplaceLineEndings("");
 
                         if (trimmed.Length != 0)
                             return trimmed.Trim();
@@ -100,7 +90,7 @@ namespace GungeonApp.WebScraper
                     percent += 10;
                 }
 
-                row.BaseID = NextID++;
+                row.BaseID = NextItemID++;
                 ExtractDescriptionData(row);
             }
 
@@ -114,6 +104,76 @@ namespace GungeonApp.WebScraper
             HtmlDocument doc = web.Load(itemUrl);
             var desc = doc.DocumentNode.SelectSingleNode("//td[@class='ammonomicon-desc']");
             item.Description = desc.InnerText ?? string.Empty;
+        }
+
+        private static IEnumerable<Synergy> ExtractSynergyDataFromHtml(IEnumerable<HtmlNode> nodes)
+        {
+            var synergyRows = nodes
+                .Skip(1)
+                .Select(tr => tr.Elements("td"));
+
+            List<Synergy> synergies = new List<Synergy>();
+            foreach (var row in synergyRows)
+            {
+                var synergy = new Synergy(); 
+                synergy.ID = NextSynergyID++;
+                synergy.Name = row.First()?.InnerText?.ReplaceLineEndings("") ?? string.Empty;
+                synergy.Effect = row.Last()?.InnerText?.ReplaceLineEndings("") ?? string.Empty;
+
+                bool hasSpriteColumn = synergy.Effect.Length == 0;
+                if (hasSpriteColumn)
+                    synergy.Effect = row.SkipLast(1).Last()?.InnerText?.ReplaceLineEndings("") ?? string.Empty;
+
+                foreach (var synergyItems in row.Skip(1).SkipLast(hasSpriteColumn ? 2 : 1))
+                {
+                    var itemStrings = synergyItems.InnerText.Split("\n").Where(x => x.Length != 0);
+
+                    Requirement requireType = Requirement.RequireAll;
+                    if (itemStrings.First().Equals("One of the following:", StringComparison.OrdinalIgnoreCase))
+                        requireType = Requirement.RequireOne;
+                    if (itemStrings.First().Equals("Two of the following:", StringComparison.OrdinalIgnoreCase))
+                        requireType = Requirement.RequireTwo;
+
+                    if (requireType != Requirement.RequireAll)
+                        itemStrings = itemStrings.Skip(1);
+
+                    if (itemStrings.All(x => x.StartsWith("Master Round")))
+                    {
+                        // Special case for Chief Master and Master's Chambers synergies
+                        var masterRounds = GungeonDB.GetItemBase("Master Round");
+                        if (synergy.Name.Equals("Chief Master"))
+                            synergy.RequireTwo = masterRounds;
+                        else if (synergy.Name.Equals("Master's Chambers"))
+                            synergy.RequireOne = masterRounds;
+
+                        continue;
+                    }
+
+                    GetSynergyItems(itemStrings, synergy, requireType);
+                }
+
+                synergies.Add(synergy);
+            }
+
+            return synergies;
+        }
+
+        private static void GetSynergyItems(IEnumerable<string> items, Synergy synergy, Requirement type)
+        {
+            switch (type)
+            {
+                case Requirement.RequireOne:
+                    synergy.RequireOne = items.Select(x => GungeonDB.GetItemBase(x).First()).ToArray();
+                    break;
+
+                case Requirement.RequireTwo:
+                    synergy.RequireTwo = items.Select(x => GungeonDB.GetItemBase(x).First()).ToArray();
+                    break;
+
+                case Requirement.RequireAll:
+                    synergy.RequireAll = items.Select(x => GungeonDB.GetItemBase(x).First()).ToArray();
+                    break;
+            }
         }
     }
 }

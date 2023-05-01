@@ -17,6 +17,7 @@ namespace GungeonApp.Model
         public string Effect { get; set; }
         public ItemBase[] RequireAll { get; set; }
         public ItemBase[] RequireOne { get; set; }
+        public ItemBase[] RequireTwo { get; set; }
 
         public Synergy()
         {
@@ -25,12 +26,13 @@ namespace GungeonApp.Model
             Effect = string.Empty;
             RequireAll = new ItemBase[0];
             RequireOne = new ItemBase[0];
+            RequireTwo = new ItemBase[0];
         }
     }
 
     public enum Requirement
     {
-        RequireAll, RequireOne
+        RequireAll, RequireOne, RequireTwo
     }
     public class SynergyEntry : ItemBase
     {

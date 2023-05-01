@@ -10,6 +10,7 @@ using System.Data.SqlClient;
 
 using GungeonApp.DatabaseCore;
 using GungeonApp.Model;
+using System.Xml.Linq;
 
 namespace GungeonApp.Database
 {
@@ -27,6 +28,25 @@ namespace GungeonApp.Database
                 using (var dbc = db.GetDbConnection())
                 {
                     string commandString = "select count(BaseID) from dbo.BaseItems";
+                    int resultCount = (int)db.ExecuteScalar(dbc, commandString);
+                    return resultCount > 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return false;
+            }
+        }
+        public static bool IsDBSynergiesInitialised()
+        {
+            try
+            {
+                DatabaseConnection db = new DatabaseConnection(ConnectionString);
+
+                using (var dbc = db.GetDbConnection())
+                {
+                    string commandString = "select count(SynergyID) from dbo.Synergies";
                     int resultCount = (int)db.ExecuteScalar(dbc, commandString);
                     return resultCount > 0;
                 }
@@ -74,6 +94,24 @@ namespace GungeonApp.Database
                 return;
             }
         }
+        public static void ImportSynergies(IEnumerable<Synergy> synergies)
+        {
+            try
+            {
+                DatabaseConnection db = new DatabaseConnection(ConnectionString);
+
+                using (var dbc = db.GetDbConnection())
+                {
+                    InsertToSynergyTable(dbc, synergies);
+                    InsertToSynergyDetailTable(dbc, synergies);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return;
+            }
+        }
 
         public static ItemBase[] GetAllItems()
         {
@@ -84,6 +122,28 @@ namespace GungeonApp.Database
                 using (var dbc = db.GetDbConnection())
                 {
                     string commandString = "select * from dbo.BaseItems bi";
+                    return db.ExecuteReaderAsEnumerable<ItemBase>(dbc, commandString).ToArray();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return new ItemBase[0];
+            }
+        }
+
+        public static ItemBase[] GetItemBase(string name)
+        {
+            try
+            {
+                DatabaseConnection db = new DatabaseConnection(ConnectionString);
+
+                using (var dbc = db.GetDbConnection())
+                {
+                    string commandString = $@"select * from dbo.BaseItems
+                                              where ItemName='{SanitiseItemName(name)}'
+                                            ";
+
                     return db.ExecuteReaderAsEnumerable<ItemBase>(dbc, commandString).ToArray();
                 }
             }
@@ -118,7 +178,7 @@ namespace GungeonApp.Database
                 {
                     string commandString = $@"select * from dbo.BaseItems bi
                                               inner join Guns g on bi.BaseID=g.BaseID
-                                              where bi.ItemName='{name}'
+                                              where bi.ItemName='{SanitiseItemName(name)}'
                                             ";
                     return db.ExecuteReaderAsEnumerable<Gun>(dbc, commandString).ToArray();
                 }
@@ -161,7 +221,7 @@ namespace GungeonApp.Database
                 {
                     string commandString = $@"select * from dbo.BaseItems bi
                                               inner join Items i on bi.BaseID=i.BaseID
-                                              where bi.ItemName='{name}'
+                                              where bi.ItemName='{SanitiseItemName(name)}'
                                             ";
                     return db.ExecuteReaderAsEnumerable<Item>(dbc, commandString).ToArray();
                 }
@@ -200,7 +260,7 @@ namespace GungeonApp.Database
                     var results = db.ExecuteReaderAsEnumerable<SynergyEntry>(dbc, commandString);
 
                     return results
-                        .GroupBy(x => new { ID = x.SynergyID, Name = x.ItemName, Effect = x.Effect })
+                        .GroupBy(x => new { ID = x.SynergyID, Name = x.ItemName, x.Effect })
                         .Select(x => new Synergy
                         {
                             ID = x.Key.ID,
@@ -210,6 +270,9 @@ namespace GungeonApp.Database
                                 .Select(y => y as ItemBase)
                                 .ToArray(),
                             RequireOne = x.Where(y => y.RequireType == Requirement.RequireOne)
+                                .Select(y => y as ItemBase)
+                                .ToArray(),
+                            RequireTwo = x.Where(y => y.RequireType == Requirement.RequireTwo)
                                 .Select(y => y as ItemBase)
                                 .ToArray()
                         })
@@ -231,7 +294,7 @@ namespace GungeonApp.Database
 
                 using (var dbc = db.GetDbConnection())
                 {
-                    string commandString = $"select * from dbo.BaseItems where ItemName like '%{itemName}%'";
+                    string commandString = $"select * from dbo.BaseItems where ItemName like '%{SanitiseItemName(itemName)}%'";
                     return db.ExecuteReaderAsEnumerable<ItemBase>(dbc, commandString)
                         .OrderBy(x => !x.ItemName.StartsWith(itemName, StringComparison.OrdinalIgnoreCase))
                         .ThenBy(x => x.ItemName)
@@ -379,6 +442,84 @@ namespace GungeonApp.Database
 
                 cmd.ExecuteNonQuery();
             }
+        }
+
+        private static void InsertToSynergyTable(DbConnection dbc, IEnumerable<Synergy> items)
+        {
+            string commandString = $@"
+                        insert into dbo.Synergies
+                            (SynergyID, Name, Effect)
+                        values
+                            (@ID, @Name, @Effect);    
+                    ";
+
+            var cmd = dbc.CreateCommand(commandString);
+            var id = new SqlParameter("@ID", SqlDbType.Int);
+            var name = new SqlParameter("@Name", SqlDbType.NVarChar, -1);
+            var effect = new SqlParameter("@Effect", SqlDbType.NVarChar, -1);
+            cmd.AddParameters(id, name, effect);
+            cmd.Prepare();
+
+            foreach (var item in items)
+            {
+                id.Value = item.ID;
+                name.Value = item.Name;
+                effect.Value = item.Effect;
+
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        private static void InsertToSynergyDetailTable(DbConnection dbc, IEnumerable<Synergy> synergies)
+        {
+            string commandString = $@"
+                        insert into dbo.SynergyDetail
+                            (SynergyID, ItemID, RequireType)
+                        values
+                            (@SynergyID, @ItemID, @Type);    
+                    ";
+
+            var cmd = dbc.CreateCommand(commandString);
+            var synergyId = new SqlParameter("@SynergyID", SqlDbType.Int);
+            var itemID = new SqlParameter("@ItemID", SqlDbType.Int);
+            var type = new SqlParameter("@Type", SqlDbType.Int);
+            cmd.AddParameters(synergyId, itemID, type);
+            cmd.Prepare();
+
+            foreach (var synergy in synergies)
+            {
+                foreach (var requireOne in synergy.RequireOne)
+                {
+                    synergyId.Value = synergy.ID;
+                    itemID.Value = requireOne.BaseID;
+                    type.Value = Requirement.RequireOne;
+
+                    cmd.ExecuteNonQuery();
+                }
+
+                foreach (var requireOne in synergy.RequireTwo)
+                {
+                    synergyId.Value = synergy.ID;
+                    itemID.Value = requireOne.BaseID;
+                    type.Value = Requirement.RequireTwo;
+
+                    cmd.ExecuteNonQuery();
+                }
+
+                foreach (var requireOne in synergy.RequireAll)
+                {
+                    synergyId.Value = synergy.ID;
+                    itemID.Value = requireOne.BaseID;
+                    type.Value = Requirement.RequireAll;
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        private static string SanitiseItemName(string itemName)
+        {
+            return itemName.Replace("'", "''");
         }
     }
 }

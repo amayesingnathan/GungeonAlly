@@ -95,8 +95,11 @@ namespace GungeonApp.Model
 
         public bool HasSynergy(Synergy trySynergy)
         {
-            return trySynergy.RequireAll.All(x => _Items.Any(y => x.BaseID == y.Key)) &&
-                trySynergy.RequireOne.Any(x => _Items.Any(y => x.BaseID == y.Key));
+            bool requireAllMatch = trySynergy.RequireAll.All(x => _Items.Any(y => x.BaseID == y.Key));
+            bool requireOneMatch = trySynergy.RequireOne.Any(x => _Items.Any(y => x.BaseID == y.Key)) || trySynergy.RequireOne.Length == 0;
+            bool requireTwoMatch = trySynergy.RequireTwo.Count(x => _Items.Any(y => x.BaseID == y.Key)) >= 2 || trySynergy.RequireTwo.Length == 0;
+
+            return requireAllMatch && requireOneMatch && requireTwoMatch;
         }
     }
 }
