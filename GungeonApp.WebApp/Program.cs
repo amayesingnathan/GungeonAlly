@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using GungeonApp.WebApp.Data;
 using GungeonApp.WebApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);

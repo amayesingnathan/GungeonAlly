@@ -422,26 +422,28 @@ namespace GungeonApp.Database
 
                 using (var dbc = db.GetDbConnection())
                 {
-                    string commandString = $@"select 
-                                                s.SynergyID, 
-                                                s.SynergyName, 
-                                                s.SynergyEffect, 
-                                                sd.RequireType, 
-                                                bi.BaseID,
-                                                bi.Type,
-                                                bi.IconImageData,
-                                                bi.ItemName,
-                                                bi.Quote,
-                                                bi.Quality
-                                              from dbo.Synergies s
-                                              inner join SynergyDetail sd on s.SynergyID = sd.SynergyID
-                                              inner join BaseItems bi on bi.BaseID = sd.ItemID
-                                              where sd.ItemID = {id}
+                    string commandString = $@"select s.SynergyID, 
+	                                            s.Name, 
+	                                            s.Effect, 
+	                                            sd.RequireType, 
+	                                            bi.BaseID,
+	                                            bi.Type,
+	                                            bi.IconImageData,
+	                                            bi.ItemName,
+	                                            bi.Quote,
+	                                            bi.Quality,
+                                                bi.Description
+                                            from
+	                                            dbo.SynergyDetail sd
+	                                            inner join dbo.Synergies s on s.SynergyID=sd.SynergyID		
+	                                            inner join dbo.SynergyDetail osd on s.SynergyID=osd.SynergyID
+	                                            inner join dbo.BaseItems bi on bi.BaseID=osd.ItemID
+	                                            where sd.ItemID={id}
                                             ";
                     var results = db.ExecuteReaderAsEnumerable<SynergyEntry>(dbc, commandString);
 
                     return results
-                        .GroupBy(x => new { ID = x.SynergyID, Name = x.ItemName, x.Effect })
+                        .GroupBy(x => new { ID = x.SynergyID, Name = x.SynergyName, x.Effect })
                         .Select(x => new Synergy
                         {
                             ID = x.Key.ID,

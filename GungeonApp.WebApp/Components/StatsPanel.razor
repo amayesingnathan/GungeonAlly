@@ -25,7 +25,7 @@
                         var ammoStr = infiniteAmmo ? "8" : gun.AmmoCap;
                         <div class="detail-row">
                             <StatsInfoFrame Label="Magazine Size" Info="@gun.MagSize" />
-                            <StatsInfoFrame Label="Ammo Capacity" Info="@ammoStr"/>
+                            <StatsInfoFrame Label="Ammo Capacity" Info="@ammoStr" Rotate="@infiniteAmmo"/>
                             <StatsInfoFrame Label="Reload Time" Info="@gun.ReloadTime" />
                         </div>
                         <div class="detail-row">
@@ -52,7 +52,42 @@
         Synergies
     </div>
     <div class="detail-panel">
-
+        @if (State?.CurrentItemSelected != null)
+        {
+            foreach (Synergy synergy in State.CurrentSynergies)
+            {
+                <div class="synergy-entry">
+                    <div class="synergy-heading">
+                        <div style="font-weight: bold;">
+                            @synergy.Name
+                        </div>
+                        <div class="synergy-icons">
+                        @foreach (ItemBase item in synergy.RequireAll.Except(new[]{ State.CurrentItemSelected }))
+                        {
+                            <div>
+                                <InventoryItem Context="@item" Selectable="false" Scale="2" />
+                            </div>
+                        }
+                        @foreach (ItemBase item in synergy.RequireTwo.Except(new[]{ State.CurrentItemSelected }))
+                        {
+                            <div>
+                                <InventoryItem Context="@item" Selectable="false" Scale="2" />
+                            </div>
+                        }
+                        @foreach (ItemBase item in synergy.RequireOne.Except(new[]{ State.CurrentItemSelected }))
+                        {
+                            <div>
+                                <InventoryItem Context="@item" Selectable="false" Scale="2" />
+                            </div>
+                        }
+                        </div>
+                    </div>
+                    <div>
+                        @synergy.Effect
+                    </div>
+                </div>
+            }
+        }
     </div>
     <div class="bottom-frame">
 

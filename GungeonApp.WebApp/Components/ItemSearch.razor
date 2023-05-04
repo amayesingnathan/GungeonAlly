@@ -70,6 +70,9 @@
                 break;
         }
 
+        State.CurrentSynergies = GungeonDB.GetSynergies(State.CurrentItemSelected.BaseID);
+
+        SearchText = string.Empty;
         await RefreshService.RequestRefresh();
     }
 

@@ -38,10 +38,7 @@
     protected override void OnInitialized()
     {
         RefreshService.RefreshRequested += OnRefresh;
-    }
 
-    protected override async Task OnInitializedAsync()
-    {
         State.CurrentInventory.AddRange(GungeonDB.GetGun("Serious Cannon"));
         State.CurrentInventory.AddRange(GungeonDB.GetGun("Stinger"));
         State.CurrentInventory.AddRange(GungeonDB.GetGun("Snowballer"));

@@ -14,8 +14,4 @@
     <ProjectReference Include="..\GungeonApp.Database\GungeonApp.Database.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="State\" />
-  </ItemGroup>
-
 </Project>

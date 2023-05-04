@@ -1,12 +1,12 @@
 ﻿@page "/"
-@inject InventoryState State
 
 <div class="base-layout">
-    <div class="inventory-panel">
-        <InventoryPanel />
+    <div class="left-page">
+        <DetailPanel />
+        @*<InventoryPanel />*@
    </div>
 
-    <div class="detail-panel">
-        <DetailPanel />
+    <div class="right-page">
+        <StatsPanel />
    </div>
 </div>

@@ -8,8 +8,11 @@
     </div>
 
     bool hide = Content == null || !DisplayContent;
-    <div hidden="@hide">
-        @Content
+    <div>
+        @if (!hide)
+        {
+            @Content
+        }
     </div>
 }
 

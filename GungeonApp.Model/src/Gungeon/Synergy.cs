@@ -18,7 +18,6 @@ namespace GungeonApp.Model
         public ItemBase[] RequireAll { get; set; }
         public ItemBase[] RequireOne { get; set; }
         public ItemBase[] RequireTwo { get; set; }
-
         public Synergy()
         {
             ID = int.MaxValue;
@@ -38,9 +37,9 @@ namespace GungeonApp.Model
     {
         [ColumnMap("SynergyID")]
         public int SynergyID { get; set; }
-        [ColumnMap("SynergyName")]
+        [ColumnMap("Name")]
         public string SynergyName { get; set; }
-        [ColumnMap("SynergyEffect")]
+        [ColumnMap("Effect")]
         public string Effect { get; set; }
         [ColumnMap("RequireType")]
         public Requirement RequireType { get; set; }
@@ -51,6 +50,10 @@ namespace GungeonApp.Model
             SynergyName = string.Empty;
             Effect = string.Empty;
             RequireType = Requirement.RequireAll;
+        }
+        public override void ParseDataRecord(IDataRecord dataRecord)
+        {
+            dataRecord.ParseByColumnMap(this);
         }
     }
 }
