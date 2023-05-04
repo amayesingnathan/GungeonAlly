@@ -4,13 +4,9 @@
         <div class="detail-label">
             @labelFmt
         </div>
-        <div>
-        @{
-            string style = Rotate ? "writing-mode: vertical-rl; margin-top: 8px; margin-left: -8px; font-size: 24px;" : string.Empty;
-            <div style="@style">
-                @Info
-            </div>
-        }
+        string style = Rotate ? "writing-mode: vertical-rl; margin-top: 8px; margin-left: -8px; font-size: 24px;" : string.Empty;
+        <div style="@style">
+            @Info
         </div>
     }
 </div>

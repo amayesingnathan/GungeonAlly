@@ -35,6 +35,9 @@
 .detail-row {
     display: flex;
     align-items: center;
+    column-gap: 40px;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .synergy-entry {
