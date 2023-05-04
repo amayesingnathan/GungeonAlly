@@ -1,0 +1,75 @@
+﻿@inject InventoryState State
+
+<div class="stats-layout">
+    <div class="heading-bar">
+        Statistics
+    </div>
+    <div class="detail-panel">
+        @if (State?.CurrentItemSelected != null)
+        {
+            <div class="detail-row">
+                <StatsInfoFrame Label="Quality" Info="@State.CurrentItemSelected.Quality.ToString()" />
+            </div>
+            switch (State.CurrentItemSelected.Type)
+            {
+                case BaseItemType.None:
+                case BaseItemType.Item:
+                    break;
+
+                case BaseItemType.Gun:
+                {
+                    var gun = State.CurrentItemSelected as Gun;
+                    if (gun != null)
+                    {
+                        var infiniteAmmo = gun.AmmoCap.Length == 0;
+                        var ammoStr = infiniteAmmo ? "8" : gun.AmmoCap;
+                        <div class="detail-row">
+                            <StatsInfoFrame Label="Magazine Size" Info="@gun.MagSize" />
+                            <StatsInfoFrame Label="Ammo Capacity" Info="@ammoStr"/>
+                            <StatsInfoFrame Label="Reload Time" Info="@gun.ReloadTime" />
+                        </div>
+                        <div class="detail-row">
+                            <StatsInfoFrame Label="DPS" Info="@gun.DPS" />
+                            <StatsInfoFrame Label="Damage" Info="@gun.Damage" />
+                        </div>
+                        <div class="detail-row">
+                            <StatsInfoFrame Label="Fire Rate" Info="@gun.FireRate" />
+                            <StatsInfoFrame Label="Shot Speed" Info="@gun.ShotSpeed" />
+                            <StatsInfoFrame Label="Range" Info="@gun.Range" />
+                        </div>
+                        <div class="detail-row">
+                            <StatsInfoFrame Label="Force" Info="@gun.Force" />
+                            <StatsInfoFrame Label="Spread" Info="@gun.Spread" />
+                            <StatsInfoFrame Label="Class" Info="@gun.Class" />
+                        </div>
+                    }
+                    break;
+                }
+            }
+        }
+    </div>
+    <div class="heading-bar">
+        Synergies
+    </div>
+    <div class="detail-panel">
+
+    </div>
+    <div class="bottom-frame">
+
+    </div>
+</div>
+
+@code {
+    [Inject]
+    public IRefreshService RefreshService { get; set; }
+
+    protected override void OnInitialized()
+    {
+        RefreshService.RefreshRequested += OnRefresh;
+    }
+    private async Task OnRefresh()
+    {
+        StateHasChanged();
+        await Task.CompletedTask;
+    }
+}

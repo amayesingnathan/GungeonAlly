@@ -4,11 +4,12 @@
     string cancelClass = Disabled ? "action-button disabled" : "action-button";
     <div class="@cancelClass" @onclick="InvokeOnClick" @onmouseover="OnStartHover" @onmouseout="OnEndHover">
         <div class="oi @Icon h1">
-            @if (DisplayContent && Content != null)
-            {
-                @Content;
-            }
         </div>
+    </div>
+
+    bool hide = Content == null || !DisplayContent;
+    <div hidden="@hide">
+        @Content
     </div>
 }
 
@@ -49,12 +50,15 @@
         await Task.CompletedTask;
     }
 
-    private void InvokeOnClick()
+    private async Task InvokeOnClick()
     {
         if (ContentTriggerType == TriggerType.OnClick)
             DisplayContent = true;
 
-        OnClick?.Invoke();
+        if (OnClick == null)
+            return;
+
+        await OnClick.Invoke();
     }
 
     private void OnStartHover()

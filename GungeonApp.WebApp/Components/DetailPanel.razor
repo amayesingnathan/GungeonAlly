@@ -2,10 +2,21 @@
 @inject IGungeonService GungeonDB
 
 <div class="detail-layout">
-    <div class="item-heading centre">
+    <div class="heading-bar">
+        <span>
+            <ActionButton Icon="oi-magnifying-glass" 
+                Disabled="false"
+                ContentTriggerType="ActionButton.TriggerType.OnClick">
+                <Content>
+                    <ItemSearch />
+                </Content>
+            </ActionButton>
+        </span>
         @{
             string name = State.CurrentItemSelected?.ItemName ?? string.Empty;
-            @name
+            <span class="item-heading centre">
+                @name
+            </span>
         }
     </div>
     <div class="item-image-detail">
@@ -55,28 +66,28 @@
             }
         }
     </div>
-    <div class="action-buttons-panel">
+    <div class="bottom-frame">
         @{
-            bool disableSearch = State.ViewType != DisplayType.Selection;
-            <DetailPanelButton Icon="oi-magnifying-glass" 
-                Disabled="@disableSearch"
-                ContentTriggerType="DetailPanelButton.TriggerType.OnClick">
-                <Content>
-                    <ItemSearch />
-                </Content>
-            </DetailPanelButton>
+            //bool disableSearch = State.ViewType != DisplayType.Selection;
+            //<DetailPanelButton Icon="oi-magnifying-glass" 
+            //    Disabled="@disableSearch"
+            //    ContentTriggerType="DetailPanelButton.TriggerType.OnClick">
+            //    <Content>
+            //        <ItemSearch />
+            //    </Content>
+            //</DetailPanelButton>
 
-            bool disableAdd = State.ViewType != DisplayType.AddInProgress;
-            <DetailPanelButton Icon="oi-plus" 
-                Disabled="@disableAdd" OnClick="AddButtonClick"
-                ContentTriggerType="DetailPanelButton.TriggerType.OnHover">
-                <Content>
-                </Content>
-            </DetailPanelButton>
+            //bool disableAdd = State.ViewType != DisplayType.AddInProgress;
+            //<DetailPanelButton Icon="oi-plus" 
+            //    Disabled="@disableAdd" OnClick="AddButtonClick"
+            //    ContentTriggerType="DetailPanelButton.TriggerType.OnHover">
+            //    <Content>
+            //    </Content>
+            //</DetailPanelButton>
 
-            bool disableCancel= State.ViewType != DisplayType.AddInProgress;
-            <DetailPanelButton Icon="oi-circle-x" 
-                Disabled="@disableCancel" OnClick="CancelButtonClick"/>
+            //bool disableCancel= State.ViewType != DisplayType.AddInProgress;
+            //<DetailPanelButton Icon="oi-circle-x" 
+            //    Disabled="@disableCancel" OnClick="CancelButtonClick"/>
         }
     </div>
 </div>
@@ -98,7 +109,6 @@
 
     private async Task AddButtonClick()
     {
-        State.ViewType = DisplayType.Selection;
         State.CurrentInventory.Add(State.CurrentItemSelected);
 
         await RefreshService.RequestRefresh();
@@ -106,7 +116,6 @@
 
     private async Task CancelButtonClick()
     {
-        State.ViewType = DisplayType.Selection;
         State.CurrentItemSelected = State.CurrentInventory.Guns.FirstOrDefault();
 
         await RefreshService.RequestRefresh();

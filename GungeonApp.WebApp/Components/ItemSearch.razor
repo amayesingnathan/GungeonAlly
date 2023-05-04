@@ -1,13 +1,15 @@
 @inject InventoryState State
 
 @{
-    int resultCount = SearchItems.Length < 5 ? SearchItems.Length : 5;
-    string topPos = $"position: absolute; top: -{2.4 + resultCount * 1.2}em;";
-    <div class="popup-container" style="@topPos">
+    <div class="popup-container">
         <div class="search-results-box">
-            <input type="text" @ref="SearchBar" @bind="@SearchText" @oninput="SearchTextChanged"/>
+            <div class="search-input">
+                <input type="text" @ref="SearchBar" @bind="@SearchText" @oninput="SearchTextChanged"/>
+                <div class="exit-search-button oi oi-circle-x h2" @onclick="ExitButtonPressed">
+                </div>
+            </div>
 
-            @foreach (ItemBase item in SearchItems.Take(5))
+            @foreach (ItemBase item in SearchItems.Take(12))
             {
                 <div class="search-result" @onclick="() => ItemSelected(item)">
                     <InventoryItem Context="@item" Selectable="false" Scale="1.5" />
@@ -29,33 +31,42 @@
     [Inject]
     public IRefreshService RefreshService { get; set; }
 
-
     private ElementReference SearchBar;
-    
+
     public string SearchText { get; set; } = string.Empty;
 
     public ItemBase[] SearchItems { get; set; } = new ItemBase[0];
 
-    private async Task SearchTextChanged(ChangeEventArgs e)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+
+        if (firstRender)
+            await SearchBar.FocusAsync();
+    }
+
+    private async Task ExitButtonPressed()
+    {
+        SearchText = string.Empty;
+        await RefreshService.RequestRefresh();
+    }
+
+    private void SearchTextChanged(ChangeEventArgs e)
     {
         SearchText = e.Value as string ?? string.Empty;
-        SearchItems = (await GungeonDB.SearchItemAsync(SearchText))
-                        .Except(State.CurrentInventory.Items, new ItemComparer())
-                        .ToArray();
+        SearchItems = GungeonDB.SearchItem(SearchText);
     }
 
     private async Task ItemSelected(ItemBase item)
     {
-        State.ViewType = DisplayType.AddInProgress;
-        
         switch (item.Type)
         {
             case BaseItemType.Item:
-                State.CurrentItemSelected = await GungeonDB.GetItemAsync(item.BaseID);
+                State.CurrentItemSelected = GungeonDB.GetItem(item.BaseID);
                 break;
 
             case BaseItemType.Gun:
-                State.CurrentItemSelected = await GungeonDB.GetGunAsync(item.BaseID);
+                State.CurrentItemSelected = GungeonDB.GetGun(item.BaseID);
                 break;
         }
 

@@ -1,0 +1,13 @@
+﻿.detail-frame {
+    display: grid;
+    grid-template-columns: 35% 65%;
+    grid-template-columns: 100%;
+    justify-content: flex-start;
+    align-items: center;
+    font-size: 20px;
+    font-family: Pixeloid;
+}
+
+.detail-label {
+    font-weight: bold;
+}

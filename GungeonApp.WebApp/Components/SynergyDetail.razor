@@ -27,14 +27,14 @@
 
     public Synergy[] Synergies { get; set; } = new Synergy[0];
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        await base.OnInitializedAsync();
+        base.OnInitialized();
 
         if (State.CurrentItemSelected is null)
             return;
 
-        var allSynergies = await GungeonDB.GetSynergiesAsync(State.CurrentItemSelected.BaseID);
+        var allSynergies = GungeonDB.GetSynergies(State.CurrentItemSelected.BaseID);
     }
 
 }

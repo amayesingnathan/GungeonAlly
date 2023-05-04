@@ -19,7 +19,8 @@ namespace GungeonApp.Database
         private const string ConnectionString = @"Server=.\SQLEXPRESS;Database=EtGDB;Trusted_Connection=True;";
         //private const string ConnectionString = "Server=localhost,1433;Database=EtGDB;User Id=SA; Password=&UWlveec123";
 
-        public static bool IsDBBaseInitialised()
+        #region Database Initialisation
+        public static void ResetDatabase()
         {
             try
             {
@@ -27,34 +28,19 @@ namespace GungeonApp.Database
 
                 using (var dbc = db.GetDbConnection())
                 {
-                    string commandString = "select count(BaseID) from dbo.BaseItems";
-                    int resultCount = (int)db.ExecuteScalar(dbc, commandString);
-                    return resultCount > 0;
+                    string commandString = @"
+                        truncate table dbo.Items;
+                        truncate table dbo.Guns;
+                        truncate table dbo.SynergyDetail;
+                        delete from dbo.Synergies;
+                        delete from dbo.BaseItems;
+                    ";
+                    db.ExecuteNonQuery(commandString);
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
-                return false;
-            }
-        }
-        public static bool IsDBSynergiesInitialised()
-        {
-            try
-            {
-                DatabaseConnection db = new DatabaseConnection(ConnectionString);
-
-                using (var dbc = db.GetDbConnection())
-                {
-                    string commandString = "select count(SynergyID) from dbo.Synergies";
-                    int resultCount = (int)db.ExecuteScalar(dbc, commandString);
-                    return resultCount > 0;
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-                return false;
             }
         }
 
@@ -113,228 +99,6 @@ namespace GungeonApp.Database
             }
         }
 
-        public static ItemBase[] GetAllItems()
-        {
-            try
-            {
-                DatabaseConnection db = new DatabaseConnection(ConnectionString);
-
-                using (var dbc = db.GetDbConnection())
-                {
-                    string commandString = "select * from dbo.BaseItems bi";
-                    return db.ExecuteReaderAsEnumerable<ItemBase>(dbc, commandString).ToArray();
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-                return new ItemBase[0];
-            }
-        }
-
-        public static ItemBase[] GetItemBase(string name)
-        {
-            try
-            {
-                DatabaseConnection db = new DatabaseConnection(ConnectionString);
-
-                using (var dbc = db.GetDbConnection())
-                {
-                    string commandString = $@"select * from dbo.BaseItems
-                                              where ItemName='{SanitiseItemName(name)}'
-                                            ";
-
-                    return db.ExecuteReaderAsEnumerable<ItemBase>(dbc, commandString).ToArray();
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-                return new ItemBase[0];
-            }
-        }
-
-        public static Gun? GetGun(int id)
-        {
-            DatabaseConnection db = new DatabaseConnection(ConnectionString);
-
-            using (var dbc = db.GetDbConnection())
-            {
-                string commandString = $@"select * from dbo.BaseItems bi
-                                            inner join Guns g on bi.BaseID=g.BaseID
-                                            where bi.BaseID={id}
-                                        ";
-                var results = db.ExecuteReaderAsEnumerable<Gun>(dbc, commandString);
-                return results.FirstOrDefault();
-            }
-        }
-        public static Gun[] GetGun(string name)
-        {
-            try
-            {
-                DatabaseConnection db = new DatabaseConnection(ConnectionString);
-
-                using (var dbc = db.GetDbConnection())
-                {
-                    string commandString = $@"select * from dbo.BaseItems bi
-                                              inner join Guns g on bi.BaseID=g.BaseID
-                                              where bi.ItemName='{SanitiseItemName(name)}'
-                                            ";
-                    return db.ExecuteReaderAsEnumerable<Gun>(dbc, commandString).ToArray();
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-                return new Gun[0];
-            }
-        }
-        public static Item? GetItem(int id)
-        {
-            try
-            {
-                DatabaseConnection db = new DatabaseConnection(ConnectionString);
-
-                using (var dbc = db.GetDbConnection())
-                {
-                    string commandString = $@"select * from dbo.BaseItems bi
-                                              inner join Items i on bi.BaseID=i.BaseID
-                                              where bi.BaseID={id}
-                                            ";
-                    var results = db.ExecuteReaderAsEnumerable<Item>(dbc, commandString);
-                    return results.FirstOrDefault();
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-                return null;
-            }
-        }
-        public static Item[] GetItem(string name)
-        {
-            try
-            {
-                DatabaseConnection db = new DatabaseConnection(ConnectionString);
-
-                using (var dbc = db.GetDbConnection())
-                {
-                    string commandString = $@"select * from dbo.BaseItems bi
-                                              inner join Items i on bi.BaseID=i.BaseID
-                                              where bi.ItemName='{SanitiseItemName(name)}'
-                                            ";
-                    return db.ExecuteReaderAsEnumerable<Item>(dbc, commandString).ToArray();
-                }
-            }
-            catch (Exception ex) 
-            {
-                Console.WriteLine(ex.ToString());
-                return new Item[0];
-            }
-        }
-
-        public static Synergy[] GetSynergies(int id)
-        {
-            try
-            {
-                DatabaseConnection db = new DatabaseConnection(ConnectionString);
-
-                using (var dbc = db.GetDbConnection())
-                {
-                    string commandString = $@"select 
-                                                s.SynergyID, 
-                                                s.SynergyName, 
-                                                s.SynergyEffect, 
-                                                sd.RequireType, 
-                                                bi.BaseID,
-                                                bi.Type,
-                                                bi.IconImageData,
-                                                bi.ItemName,
-                                                bi.Quote,
-                                                bi.Quality
-                                              from dbo.Synergies s
-                                              inner join SynergyDetail sd on s.SynergyID = sd.SynergyID
-                                              inner join BaseItems bi on bi.BaseID = sd.ItemID
-                                              where sd.ItemID = {id}
-                                            ";
-                    var results = db.ExecuteReaderAsEnumerable<SynergyEntry>(dbc, commandString);
-
-                    return results
-                        .GroupBy(x => new { ID = x.SynergyID, Name = x.ItemName, x.Effect })
-                        .Select(x => new Synergy
-                        {
-                            ID = x.Key.ID,
-                            Name = x.Key.Name,
-                            Effect = x.Key.Effect,
-                            RequireAll = x.Where(y => y.RequireType == Requirement.RequireAll)
-                                .Select(y => y as ItemBase)
-                                .ToArray(),
-                            RequireOne = x.Where(y => y.RequireType == Requirement.RequireOne)
-                                .Select(y => y as ItemBase)
-                                .ToArray(),
-                            RequireTwo = x.Where(y => y.RequireType == Requirement.RequireTwo)
-                                .Select(y => y as ItemBase)
-                                .ToArray()
-                        })
-                        .ToArray();
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-                return new Synergy[0];
-            }
-        }
-
-        public static ItemBase[] MatchItem(string itemName)
-        {
-            try
-            {
-                DatabaseConnection db = new DatabaseConnection(ConnectionString);
-
-                using (var dbc = db.GetDbConnection())
-                {
-                    string commandString = $"select * from dbo.BaseItems where ItemName like '%{SanitiseItemName(itemName)}%'";
-                    return db.ExecuteReaderAsEnumerable<ItemBase>(dbc, commandString)
-                        .OrderBy(x => !x.ItemName.StartsWith(itemName, StringComparison.OrdinalIgnoreCase))
-                        .ThenBy(x => x.ItemName)
-                        .ToArray();
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-                return new ItemBase[0];
-            }
-        }
-
-        public static void SetColumnValue(int id, string column, object value)
-        {
-            try
-            {
-                DatabaseConnection db = new DatabaseConnection(ConnectionString);
-
-                using (var dbc = db.GetDbConnection())
-                {
-                    string commandString = $@"
-                                update dbo.BaseItems
-                                    set {column} = @Value
-                                where
-                                    BaseID = @ID;    
-                            ";
-
-                    var cmd = dbc.CreateCommand(commandString);
-                    var idParam = new SqlParameter("@ID", SqlDbType.Int) { Value = id };
-                    var valueParam = new SqlParameter("@Value", SqlDbType.NVarChar, -1) { Value = value };
-                    cmd.AddParameters(idParam, valueParam);
-                    cmd.ExecuteNonQuery();
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-            }
-        }
 
         private static void InsertToBaseItemTable(DbConnection dbc, IEnumerable<ItemBase> items)
         {
@@ -517,9 +281,270 @@ namespace GungeonApp.Database
             }
         }
 
+        #endregion
+
+        #region ItemBase
+        public static ItemBase[] GetAllItems()
+        {
+            try
+            {
+                DatabaseConnection db = new DatabaseConnection(ConnectionString);
+
+                using (var dbc = db.GetDbConnection())
+                {
+                    string commandString = "select * from dbo.BaseItems bi";
+                    return db.ExecuteReaderAsEnumerable<ItemBase>(dbc, commandString).ToArray();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return new ItemBase[0];
+            }
+        }
+
+        public static ItemBase[] GetItemBase(string name)
+        {
+            try
+            {
+                DatabaseConnection db = new DatabaseConnection(ConnectionString);
+
+                using (var dbc = db.GetDbConnection())
+                {
+                    string commandString = $@"select * from dbo.BaseItems
+                                              where ItemName='{SanitiseItemName(name)}'
+                                            ";
+
+                    return db.ExecuteReaderAsEnumerable<ItemBase>(dbc, commandString).ToArray();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return new ItemBase[0];
+            }
+        }
+
+        #endregion
+
+        #region Gun
+        public static Gun? GetGun(int id)
+        {
+            DatabaseConnection db = new DatabaseConnection(ConnectionString);
+
+            using (var dbc = db.GetDbConnection())
+            {
+                string commandString = $@"select * from dbo.BaseItems bi
+                                            inner join Guns g on bi.BaseID=g.BaseID
+                                            where bi.BaseID={id}
+                                        ";
+                var results = db.ExecuteReaderAsEnumerable<Gun>(dbc, commandString);
+                return results.FirstOrDefault();
+            }
+        }
+        public static Gun[] GetGun(string name)
+        {
+            try
+            {
+                DatabaseConnection db = new DatabaseConnection(ConnectionString);
+
+                using (var dbc = db.GetDbConnection())
+                {
+                    string commandString = $@"select * from dbo.BaseItems bi
+                                              inner join Guns g on bi.BaseID=g.BaseID
+                                              where bi.ItemName='{SanitiseItemName(name)}'
+                                            ";
+                    return db.ExecuteReaderAsEnumerable<Gun>(dbc, commandString).ToArray();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return new Gun[0];
+            }
+        }
+
+        #endregion
+
+        #region Item
+        public static Item? GetItem(int id)
+        {
+            try
+            {
+                DatabaseConnection db = new DatabaseConnection(ConnectionString);
+
+                using (var dbc = db.GetDbConnection())
+                {
+                    string commandString = $@"select * from dbo.BaseItems bi
+                                              inner join Items i on bi.BaseID=i.BaseID
+                                              where bi.BaseID={id}
+                                            ";
+                    var results = db.ExecuteReaderAsEnumerable<Item>(dbc, commandString);
+                    return results.FirstOrDefault();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return null;
+            }
+        }
+        public static Item[] GetItem(string name)
+        {
+            try
+            {
+                DatabaseConnection db = new DatabaseConnection(ConnectionString);
+
+                using (var dbc = db.GetDbConnection())
+                {
+                    string commandString = $@"select * from dbo.BaseItems bi
+                                              inner join Items i on bi.BaseID=i.BaseID
+                                              where bi.ItemName='{SanitiseItemName(name)}'
+                                            ";
+                    return db.ExecuteReaderAsEnumerable<Item>(dbc, commandString).ToArray();
+                }
+            }
+            catch (Exception ex) 
+            {
+                Console.WriteLine(ex.ToString());
+                return new Item[0];
+            }
+        }
+
+        #endregion
+
+        #region Synergies
+        public static Synergy[] GetSynergies(int id)
+        {
+            try
+            {
+                DatabaseConnection db = new DatabaseConnection(ConnectionString);
+
+                using (var dbc = db.GetDbConnection())
+                {
+                    string commandString = $@"select 
+                                                s.SynergyID, 
+                                                s.SynergyName, 
+                                                s.SynergyEffect, 
+                                                sd.RequireType, 
+                                                bi.BaseID,
+                                                bi.Type,
+                                                bi.IconImageData,
+                                                bi.ItemName,
+                                                bi.Quote,
+                                                bi.Quality
+                                              from dbo.Synergies s
+                                              inner join SynergyDetail sd on s.SynergyID = sd.SynergyID
+                                              inner join BaseItems bi on bi.BaseID = sd.ItemID
+                                              where sd.ItemID = {id}
+                                            ";
+                    var results = db.ExecuteReaderAsEnumerable<SynergyEntry>(dbc, commandString);
+
+                    return results
+                        .GroupBy(x => new { ID = x.SynergyID, Name = x.ItemName, x.Effect })
+                        .Select(x => new Synergy
+                        {
+                            ID = x.Key.ID,
+                            Name = x.Key.Name,
+                            Effect = x.Key.Effect,
+                            RequireAll = x.Where(y => y.RequireType == Requirement.RequireAll)
+                                .Select(y => y as ItemBase)
+                                .ToArray(),
+                            RequireOne = x.Where(y => y.RequireType == Requirement.RequireOne)
+                                .Select(y => y as ItemBase)
+                                .ToArray(),
+                            RequireTwo = x.Where(y => y.RequireType == Requirement.RequireTwo)
+                                .Select(y => y as ItemBase)
+                                .ToArray()
+                        })
+                        .ToArray();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return new Synergy[0];
+            }
+        }
+
+        #endregion
+
+        #region Search
+        public static ItemBase[] MatchItem(string itemName)
+        {
+            try
+            {
+                DatabaseConnection db = new DatabaseConnection(ConnectionString);
+
+                using (var dbc = db.GetDbConnection())
+                {
+                    string safeItemName = SanitiseItemName(itemName);
+                    string commandString = @"
+                        declare @SearchString nvarchar(max) = '%' + @Name + '%';
+                        declare @GoodMatch    nvarchar(max) = '%' + @Name;
+                        declare @BadMatch     nvarchar(max) = @Name + '%';
+
+                        select TOP 50 * from dbo.BaseItems
+                        where ItemName like @SearchString
+                        ORDER BY 
+                            CASE
+                                WHEN ItemName LIKE @GoodMatch THEN 1
+                                WHEN ItemName LIKE @BadMatch THEN 3
+                                ELSE 2
+                            END, ItemName
+                    ";
+
+                    var name = new SqlParameter("@Name", SqlDbType.NVarChar, -1) { Value = safeItemName };
+                    return db.ExecuteReaderAsEnumerable<ItemBase>(dbc, commandString, CommandType.Text, null, name)
+                        .OrderBy(x => !x.ItemName.StartsWith(itemName, StringComparison.OrdinalIgnoreCase))
+                        .ThenBy(x => x.ItemName)
+                        .ToArray();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return new ItemBase[0];
+            }
+        }
+
+        #endregion
+
+        #region Utils
+
+        public static void SetColumnValue(int id, string column, object value)
+        {
+            try
+            {
+                DatabaseConnection db = new DatabaseConnection(ConnectionString);
+
+                using (var dbc = db.GetDbConnection())
+                {
+                    string commandString = $@"
+                                update dbo.BaseItems
+                                    set {column} = @Value
+                                where
+                                    BaseID = @ID;    
+                            ";
+
+                    var cmd = dbc.CreateCommand(commandString);
+                    var idParam = new SqlParameter("@ID", SqlDbType.Int) { Value = id };
+                    var valueParam = new SqlParameter("@Value", SqlDbType.NVarChar, -1) { Value = value };
+                    cmd.AddParameters(idParam, valueParam);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+        }
+
         private static string SanitiseItemName(string itemName)
         {
             return itemName.Replace("'", "''");
         }
+
+        #endregion
     }
 }

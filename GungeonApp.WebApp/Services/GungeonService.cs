@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 
+using GungeonApp.Database;
 using GungeonApp.Model;
 using System.Net.Http.Json;
 using System.Xml.Linq;
@@ -11,22 +12,14 @@ namespace GungeonApp.WebApp.Services
 {
     public class GungeonService : IGungeonService
     {
-        private const string BaseAddress = "http://localhost:5101";
-        private readonly HttpClient _httpClient;
-
-        public GungeonService(HttpClient httpClient)
-        {
-            _httpClient = httpClient;
-        }
         public Gun? GetGun(int id)
         {
             try
             {
-                string endpoint = $"{BaseAddress}/gun/id/{id}";
-                var gun = _httpClient.GetFromJsonAsync<Gun>(endpoint).Result;
+                var gun = GungeonDB.GetGun(id);
                 if (gun is null)
                 {
-                    Console.WriteLine("Could not retrieve resource at {0}", endpoint);
+                    Console.WriteLine("Could not locate gun with id {0}", id);
                 }
 
                 return gun;
@@ -38,55 +31,14 @@ namespace GungeonApp.WebApp.Services
             }
         }
 
-        public async Task<Gun?> GetGunAsync(int id)
+        public Gun[] GetGun(string name)
         {
             try
             {
-                string endpoint = $"{BaseAddress}/gun/id/{id}";
-                var gun = await _httpClient.GetFromJsonAsync<Gun>(endpoint);
+                var gun = GungeonDB.GetGun(name);
                 if (gun is null)
                 {
-                    Console.WriteLine("Could not retrieve resource at {0}", endpoint);
-                }
-
-                return gun;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error: {ex}");
-                return null;
-            }
-        }
-
-        public Gun[]? GetGun(string name)
-        {
-            try
-            {
-                string endpoint = $"{BaseAddress}/gun/name/{name}";
-                var gun = _httpClient.GetFromJsonAsync<Gun[]>(endpoint).Result;
-                if (gun is null)
-                {
-                    Console.WriteLine("Could not retrieve resource at {0}", endpoint);
-                }
-
-                return gun;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error: {ex}");
-                return null;
-            }
-        }
-
-        public async Task<Gun[]> GetGunAsync(string name)
-        {
-            try
-            {
-                string endpoint = $"{BaseAddress}/gun/name/{name}";
-                var gun = await _httpClient.GetFromJsonAsync<Gun[]>(endpoint);
-                if (gun is null)
-                {
-                    Console.WriteLine("Could not retrieve resource at {0}", endpoint);
+                    Console.WriteLine("Could not locate gun with name {0}", name);
                 }
 
                 return gun ?? new Gun[0];
@@ -102,11 +54,10 @@ namespace GungeonApp.WebApp.Services
         {
             try
             {
-                string endpoint = $"{BaseAddress}/item/id/{id}";
-                var item = _httpClient.GetFromJsonAsync<Item>(endpoint).Result;
+                var item = GungeonDB.GetItem(id);
                 if (item is null)
                 {
-                    Console.WriteLine("Could not retrieve resource at {0}", endpoint);
+                    Console.WriteLine("Could not locate item with id {0}", id);
                 }
 
                 return item;
@@ -118,55 +69,14 @@ namespace GungeonApp.WebApp.Services
             }
         }
 
-        public async Task<Item?> GetItemAsync(int id)
+        public Item[] GetItem(string name)
         {
             try
             {
-                string endpoint = $"{BaseAddress}/item/id/{id}";
-                var item = await _httpClient.GetFromJsonAsync<Item>(endpoint);
+                var item = GungeonDB.GetItem(name);
                 if (item is null)
                 {
-                    Console.WriteLine("Could not retrieve resource at {0}", endpoint);
-                }
-
-                return item;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error: {ex}");
-                return null;
-            }
-        }
-
-        public Item[]? GetItem(string name)
-        {
-            try
-            {
-                string endpoint = $"{BaseAddress}/item/name/{name}";
-                var item = _httpClient.GetFromJsonAsync<Item[]>(endpoint).Result;
-                if (item is null)
-                {
-                    Console.WriteLine("Could not retrieve resource at {0}", endpoint);
-                }
-
-                return item;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error: {ex}");
-                return null;
-            }
-        }
-
-        public async Task<Item[]> GetItemAsync(string name)
-        {
-            try
-            {
-                string endpoint = $"{BaseAddress}/item/name/{name}";
-                var item = await _httpClient.GetFromJsonAsync<Item[]>(endpoint);
-                if (item is null)
-                {
-                    Console.WriteLine("Could not retrieve resource at {0}", endpoint);
+                    Console.WriteLine("Could not locate item with name {0}", name);
                 }
 
                 return item ?? new Item[0];
@@ -178,38 +88,17 @@ namespace GungeonApp.WebApp.Services
             }
         }
 
-        public ItemBase[]? SearchItem(string name)
+        public ItemBase[] SearchItem(string name)
         {
             try
             {
-                string endpoint = $"{BaseAddress}/search/{name}";
-                var items = _httpClient.GetFromJsonAsync<Item[]>(endpoint).Result;
-                if (items is null)
+                var item = GungeonDB.MatchItem(name);
+                if (item is null)
                 {
-                    Console.WriteLine("Could not retrieve resource at {0}", endpoint);
+                    Console.WriteLine("Could not locate any items matching name {0}", name);
                 }
 
-                return items;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error: {ex}");
-                return null;
-            }
-        }
-
-        public async Task<ItemBase[]> SearchItemAsync(string name)
-        {
-            try
-            {
-                string endpoint = $"{BaseAddress}/search/{name}";
-                var items = await _httpClient.GetFromJsonAsync<ItemBase[]>(endpoint);
-                if (items is null)
-                {
-                    Console.WriteLine("Could not retrieve resource at {0}", endpoint);
-                }
-
-                return items ?? new ItemBase[0];
+                return item ?? new ItemBase[0];
             }
             catch (Exception ex)
             {
@@ -218,15 +107,14 @@ namespace GungeonApp.WebApp.Services
             }
         }
 
-        public async Task<Synergy[]> GetSynergiesAsync(int itemID)
+        public Synergy[] GetSynergies(int itemID)
         {
             try
             {
-                string endpoint = $"{BaseAddress}/synergy/{itemID}";
-                var synergies = await _httpClient.GetFromJsonAsync<Synergy[]>(endpoint);
+                var synergies = GungeonDB.GetSynergies(itemID);
                 if (synergies is null)
                 {
-                    Console.WriteLine("Could not retrieve resource at {0}", endpoint);
+                    Console.WriteLine("Could not locate any synergies for item {0}", itemID);
                 }
 
                 return synergies ?? new Synergy[0];

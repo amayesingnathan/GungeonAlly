@@ -1,0 +1,27 @@
+﻿<div class="detail-frame">
+    @{
+        string labelFmt = $"{Label}:";
+        <div class="detail-label">
+            @labelFmt
+        </div>
+        <div>
+        @{
+            string style = Rotate ? "transform: rotate(90deg);" : string.Empty;
+            <div style="@style">
+                @Info
+            </div>
+        }
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public string Label { get; set; } = string.Empty;
+
+    [Parameter]
+    public string Info { get; set; } = string.Empty;
+
+    [Parameter]
+    public bool Rotate { get; set; } = false;
+}

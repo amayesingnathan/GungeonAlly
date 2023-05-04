@@ -1,0 +1,46 @@
+﻿.stats-layout {
+    display: grid;
+    grid-template-rows: 9% 38% 9% 38% 6%;
+    grid-template-columns: 100%;
+    height: 100%;
+    min-height: 100%;
+}
+
+.heading-bar {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    font-size: 28px;
+    font-family: Pixeloid;
+    margin-top: 4px;
+    margin-left: 9%;
+    margin-right: 9%;
+    border-top: 2px solid #343147;
+    border-bottom: 6px double #343147;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+.detail-panel {
+    margin-left: 9%;
+    margin-right: 9%;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    padding-left: 12px;
+    padding-right: 12px;
+    overflow-y: scroll;
+    color: #343147;
+}
+
+.detail-row {
+    display: flex;
+    align-items: center;
+    column-gap: 20px;
+}
+
+.bottom-frame {
+    padding-top: 2px;
+    padding-bottom: 2px;
+    margin-left: 9%;
+    margin-right: 9%;
+}

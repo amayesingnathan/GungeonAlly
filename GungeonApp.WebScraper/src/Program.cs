@@ -17,16 +17,12 @@ namespace GungeonApp.WebScraper
     {
         static void Main(string[] args)
         {
-            if (!GungeonDB.IsDBBaseInitialised())
-            {
-                GungeonDB.ImportGuns(Scraper.GetGunData());
-                GungeonDB.ImportItems(Scraper.GetItemData());
-            }
+            GungeonDB.ResetDatabase();
 
-            if (!GungeonDB.IsDBSynergiesInitialised())
-            {
-                GungeonDB.ImportSynergies(Scraper.GetSynergiesData());
-            }
+            GungeonDB.ImportGuns(Scraper.GetGunData());
+            GungeonDB.ImportItems(Scraper.GetItemData());
+
+            GungeonDB.ImportSynergies(Scraper.GetSynergiesData());
         }
     }
 }
