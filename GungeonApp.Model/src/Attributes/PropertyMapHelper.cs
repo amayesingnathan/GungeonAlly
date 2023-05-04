@@ -31,7 +31,7 @@ namespace GungeonApp.Model
         }
         private static void ParsePrimitive(PropertyInfo prop, object entity, object value, LoadType loadType)
         {
-            if (loadType == LoadType.ImageUrl)
+            if (loadType == LoadType.ImageUrl && Uri.IsWellFormedUriString(value.ToString(), UriKind.Absolute))
             {
                 HttpClient wc = new HttpClient();
                 try
