@@ -6,17 +6,29 @@
     min-height: 100%;
 }
 
-.art-splash {
-    margin-top: 20%;
+.art-splash-layout {
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+    margin-top: 10%;
     margin-bottom: 5%;
+}
+
+.logo-caption {
+    display: flex;
+    justify-content: flex-end;
+    transform: rotate(-10deg);
+    font-size: 24px;
+    font-family: Pixeloid;
+    color: yellow;
+    margin-right: 60px;
 }
 
 .menu-options {
     display: flex;
     flex-direction: column;
     row-gap: 10px;
-    margin-top: 5%;
-    margin-bottom: 10%;
+    margin: 5% 20% 10% 20%;
 }
 
 .menu-button {
