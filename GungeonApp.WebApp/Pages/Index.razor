@@ -1,12 +1,10 @@
 ﻿@page "/"
 
-<div class="base-layout">
-    <div class="left-page">
+<PageLayout>
+    <LeftPanel>
         <DetailPanel />
-        @*<InventoryPanel />*@
-   </div>
-
-    <div class="right-page">
+    </LeftPanel>
+    <RightPanel>
         <StatsPanel />
-   </div>
-</div>
+    </RightPanel>
+</PageLayout>
