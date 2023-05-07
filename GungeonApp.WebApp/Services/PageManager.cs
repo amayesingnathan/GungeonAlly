@@ -38,6 +38,7 @@ namespace GungeonApp.WebApp.Services
 
             switch (page)
             {
+                case PageType.Null:
                 case PageType.Home:
                     navigationManager.NavigateTo("/");
                     break;
