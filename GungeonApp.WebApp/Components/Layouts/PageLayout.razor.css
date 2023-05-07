@@ -1,0 +1,15 @@
+﻿.base-layout {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    height: 99vh
+}
+
+.left-page {
+    background-color: #A7A49D;
+    background: linear-gradient(270deg, rgba(54,53,53,1) 0%, rgba(167,164,157,1) 2%, rgba(167,164,157,1) 100%);
+}
+
+.right-page {
+    background-color: #A7A49D;
+    background: linear-gradient(90deg, rgba(54,53,53,1) 0%, rgba(167,164,157,1) 2%, rgba(167,164,157,1) 100%);
+}

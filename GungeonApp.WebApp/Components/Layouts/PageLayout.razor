@@ -1,0 +1,15 @@
+﻿<div class="base-layout">
+    <div class="left-page">
+        @LeftPanel
+   </div>
+
+    <div class="right-page">
+        @RightPanel
+   </div>
+</div>
+
+@code {
+    public RenderFragment? LeftPanel { get; set; }
+    public RenderFragment? RightPanel { get; set; }
+
+}
