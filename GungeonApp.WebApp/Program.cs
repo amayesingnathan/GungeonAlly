@@ -9,6 +9,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddScoped<IGungeonService, GungeonService>();
 builder.Services.AddScoped<IRefreshService, RefreshService>();
+builder.Services.AddSingleton<PageManager>();
 builder.Services.AddSingleton<InventoryState>();
 
 var app = builder.Build();

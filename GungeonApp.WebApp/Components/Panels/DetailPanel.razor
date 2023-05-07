@@ -1,8 +1,20 @@
 ﻿@inject InventoryState State
 @inject IGungeonService GungeonDB
+@inherits NavigationComponent
 
 <div class="detail-layout">
     <div class="heading-bar">
+        <span>
+            <ActionButton Icon="oi-arrow-circle-left" 
+                Disabled="false"
+                OnClick="BackButtonClick" />
+        </span>
+        @{
+            string name = State.CurrentItemSelected?.ItemName ?? string.Empty;
+            <span class="item-heading centre">
+                @name
+            </span>
+        }
         <span>
             <ActionButton Icon="oi-magnifying-glass" 
                 Disabled="false"
@@ -12,12 +24,6 @@
                 </Content>
             </ActionButton>
         </span>
-        @{
-            string name = State.CurrentItemSelected?.ItemName ?? string.Empty;
-            <span class="item-heading centre">
-                @name
-            </span>
-        }
     </div>
     <div class="item-image-detail">
         <div class="image-frame">
@@ -67,32 +73,11 @@
         }
     </div>
     <div class="bottom-frame">
-        @{
-            //bool disableSearch = State.ViewType != DisplayType.Selection;
-            //<DetailPanelButton Icon="oi-magnifying-glass" 
-            //    Disabled="@disableSearch"
-            //    ContentTriggerType="DetailPanelButton.TriggerType.OnClick">
-            //    <Content>
-            //        <ItemSearch />
-            //    </Content>
-            //</DetailPanelButton>
-
-            //bool disableAdd = State.ViewType != DisplayType.AddInProgress;
-            //<DetailPanelButton Icon="oi-plus" 
-            //    Disabled="@disableAdd" OnClick="AddButtonClick"
-            //    ContentTriggerType="DetailPanelButton.TriggerType.OnHover">
-            //    <Content>
-            //    </Content>
-            //</DetailPanelButton>
-
-            //bool disableCancel= State.ViewType != DisplayType.AddInProgress;
-            //<DetailPanelButton Icon="oi-circle-x" 
-            //    Disabled="@disableCancel" OnClick="CancelButtonClick"/>
-        }
     </div>
 </div>
 
 @code {
+    protected override PageType Type { get { return PageType.Ammonomicon; }}
 
     [Inject]
     public IRefreshService RefreshService { get; set; }
@@ -104,6 +89,12 @@
     private async Task OnRefresh()
     {
         StateHasChanged();
+        await Task.CompletedTask;
+    }
+
+    private async Task BackButtonClick()
+    {
+        NavigateBack();
         await Task.CompletedTask;
     }
 
