@@ -5,50 +5,56 @@ namespace GungeonApp.WebApp.Services
 {
     public class PageManager
     {
-        public int HistoryIndex { get; set; } = 0;
-        public PageType[] History { get; set; } = new PageType[5];
-        public void NavigateTo(NavigationManager navigationManager, PageType src, PageType dest, object? context = null) 
+        public PageManager(NavigationManager navigationManager, PageHistory history)
         {
-            History[HistoryIndex] = src;
-            HistoryIndex++;
-            HistoryIndex %= History.Length;
+            _NavigationManager = navigationManager;
+            History = history;
+        }
+
+        private readonly NavigationManager _NavigationManager;
+        private PageHistory History;
+        public void NavigateTo(PageType src, PageType dest, object? context = null) 
+        {
+            History.Pages[History.Index] = src;
+            History.Index++;
+            History.Index %= History.Pages.Length;
 
             switch (dest)
             {
                 case PageType.Home:
-                    navigationManager.NavigateTo("/");
+                    _NavigationManager.NavigateTo("/");
                     break;
 
                 case PageType.Ammonomicon:
-                    navigationManager.NavigateTo("ammonomicon");
+                    _NavigationManager.NavigateTo("ammonomicon");
                     break;
 
                 case PageType.Inventory:
-                    navigationManager.NavigateTo("inventory");
+                    _NavigationManager.NavigateTo("inventory");
                     break;
             }
         }
 
-        public void NavigateBack(NavigationManager navigationManager)
+        public void NavigateBack()
         {
-            HistoryIndex += 4; // Equivalent to -1
-            HistoryIndex %= History.Length;
-            PageType page = History[HistoryIndex];
-            History[HistoryIndex] = PageType.Null;
+            History.Index += 4; // Equivalent to -1
+            History.Index %= History.Pages.Length;
+            PageType page = History.Pages[History.Index];
+            History.Pages[History.Index] = PageType.Null;
 
             switch (page)
             {
                 case PageType.Null:
                 case PageType.Home:
-                    navigationManager.NavigateTo("/");
+                    _NavigationManager.NavigateTo("/");
                     break;
 
                 case PageType.Ammonomicon:
-                    navigationManager.NavigateTo("ammonomicon");
+                    _NavigationManager.NavigateTo("ammonomicon");
                     break;
 
                 case PageType.Inventory:
-                    navigationManager.NavigateTo("inventory");
+                    _NavigationManager.NavigateTo("inventory");
                     break;
             }
         }

@@ -59,19 +59,7 @@
 
     private async Task ItemSelected(ItemBase item)
     {
-        switch (item.Type)
-        {
-            case BaseItemType.Item:
-                State.CurrentItemSelected = GungeonDB.GetItem(item.BaseID);
-                break;
-
-            case BaseItemType.Gun:
-                State.CurrentItemSelected = GungeonDB.GetGun(item.BaseID);
-                break;
-        }
-
-        State.CurrentSynergies = GungeonDB.GetSynergies(State.CurrentItemSelected.BaseID);
-
+        State.Select(item);
         SearchText = string.Empty;
         await RefreshService.RequestRefresh();
     }

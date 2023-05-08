@@ -28,8 +28,6 @@
 
 @code {
     [Inject]
-    public IGungeonService GungeonDB { get; set; }
-    [Inject]
     public IRefreshService RefreshService { get; set; }
 
     [Parameter]
@@ -49,7 +47,7 @@
         if (!Selectable)
             return;
             
-        State.CurrentItemSelected = Context;
+        State.Select(Context);
 
         await RefreshService?.RequestRefresh();
     }

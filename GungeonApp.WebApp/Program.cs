@@ -7,10 +7,11 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddScoped<IGungeonService, GungeonService>();
-builder.Services.AddScoped<IRefreshService, RefreshService>();
-builder.Services.AddSingleton<PageManager>();
+builder.Services.AddSingleton<IGungeonService, GungeonService>();
 builder.Services.AddSingleton<InventoryState>();
+builder.Services.AddSingleton<PageHistory>();
+builder.Services.AddScoped<IRefreshService, RefreshService>();
+builder.Services.AddScoped<PageManager>();
 
 var app = builder.Build();
 

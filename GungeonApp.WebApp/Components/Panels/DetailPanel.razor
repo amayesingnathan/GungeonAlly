@@ -107,7 +107,7 @@
 
     private async Task CancelButtonClick()
     {
-        State.CurrentItemSelected = State.CurrentInventory.Guns.FirstOrDefault();
+        State.Select(State.CurrentInventory.Guns.FirstOrDefault());
 
         await RefreshService.RequestRefresh();
     }
