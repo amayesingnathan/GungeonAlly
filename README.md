@@ -1,7 +1,6 @@
-# Foobar
-#GungeonAlly
+# GungeonAlly
 
-Gungeon is Blazor Server Web App for aiding your adventures in Enter the Gungeon.
+GungeonAlly is Blazor Server Web App for aiding your adventures in Enter the Gungeon.
 
 ## Installation
 
@@ -18,4 +17,4 @@ script to allow users to download and set up the web app as a locally run applic
 
 ## License
 
-[MIT](https://choosealicense.com/licenses/mit/)
+[MIT](https://github.com/amayesingnathan/GungeonAlly/blob/853f50efad19096b372358652fa4c8971b2a1250/README.md)
