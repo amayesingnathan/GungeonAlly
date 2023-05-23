@@ -4,8 +4,8 @@ GungeonAlly is Blazor Server Web App for aiding your adventures in Enter the Gun
 
 ## Installation
 
-Clone the repository in order to download and run the app. Start the GungeonApp.WebScraper project to download all required data into a SQL Server database
-and start GungeonApp.WebApp in order to run the web app.
+Clone the repository in order to download and run the app. Start the GungeonAlly.WebScraper project to download all required data into a SQL Server database
+and start GungeonAlly.WebApp in order to run the web app. Database setup scripts are not yet included.
 
 ```
 git clone --recursive https://github.com/amayesingnathan/GungeonAlly.git
