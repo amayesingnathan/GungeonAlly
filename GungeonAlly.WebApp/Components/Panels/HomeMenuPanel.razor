@@ -1,0 +1,43 @@
+﻿@inject IJSRuntime JsRuntime
+@inherits NavigationComponent
+
+<div class="home-layout">
+    <div class="art-splash-layout">
+        <div class="centre">
+            <img src="logo.png" width="65%" />
+        </div>
+        <div class="logo-caption">
+            The Ultimate Helper App!
+        </div>
+    </div>
+    <div class="menu-options">
+        <div class="menu-button" @onclick="OnLookup">
+            Ammonomicon
+        </div>
+        <div class="menu-button" @onclick="OnInventory">
+            Inventory
+        </div>
+        <div class="menu-button" @onclick="OnExit">
+            Exit
+        </div>
+    </div>
+</div>
+
+@code {
+    protected override PageType Type { get { return PageType.Home; }}
+
+    private void OnLookup()
+    {
+        NavigateTo(PageType.Ammonomicon);
+    }
+
+    private void OnInventory()
+    {
+        NavigateTo(PageType.Inventory);
+    }
+
+    private void OnExit()
+    {
+        JsRuntime.InvokeVoidAsync("window.close");
+    }
+}

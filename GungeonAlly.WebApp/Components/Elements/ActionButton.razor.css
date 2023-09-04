@@ -1,0 +1,19 @@
+﻿.action-button {
+    height: 100%;
+    aspect-ratio: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid;
+    border-radius: 20px;
+    background-color: #cbb959;
+}
+
+    .action-button:hover {
+        background-color: #6d6224;
+    }
+
+.disabled {
+    pointer-events: none;
+    opacity: 0.4;
+}

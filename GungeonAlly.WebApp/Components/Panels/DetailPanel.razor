@@ -1,0 +1,114 @@
+﻿@inject InventoryState State
+@inject IGungeonService GungeonDB
+@inherits NavigationComponent
+
+<div class="detail-layout">
+    <div class="heading-bar">
+        <span>
+            <ActionButton Icon="oi-arrow-circle-left" 
+                Disabled="false"
+                OnClick="BackButtonClick" />
+        </span>
+        @{
+            string name = State.CurrentItemSelected?.ItemName ?? string.Empty;
+            <span class="item-heading centre">
+                @name
+            </span>
+        }
+        <span>
+            <ActionButton Icon="oi-magnifying-glass" 
+                Disabled="false"
+                ContentTriggerType="ActionButton.TriggerType.OnClick">
+                <Content>
+                    <ItemSearch />
+                </Content>
+            </ActionButton>
+        </span>
+    </div>
+    <div class="item-image-detail">
+        <div class="image-frame">
+            <InventoryItem Context="@State.CurrentItemSelected" Scale="8" Selectable="false" Shadow="true"/>
+        </div>
+        <div class="quote-label">
+        @{
+            string quote = State.CurrentItemSelected?.Quote ?? string.Empty;
+            @quote
+        }
+        </div>
+        <div class="itemtype-label">
+            @{
+                string type = string.Empty;
+                ItemBase? item = State.CurrentItemSelected;
+
+                if (item != null)
+                {
+                    switch (item.Type)
+                    {
+                        case BaseItemType.Gun:
+                            type = (State.CurrentItemSelected as Gun)?.GunType ?? string.Empty;
+                            break;
+                        case BaseItemType.Item:
+                            type = (State.CurrentItemSelected as Item)?.ItemType ?? string.Empty;
+                            break;
+
+                    }
+                }
+                
+                @type
+            }
+        </div>
+    </div>
+    <div class="description-label">
+        @{
+            string desc = State.CurrentItemSelected?.Description ?? string.Empty;
+            var sections = desc.Split('\n').Where(x => x.Length != 0);
+            foreach (string paragraph in sections)
+            {
+                <p>@paragraph</p>
+                if (!paragraph.Equals(sections.Last()))
+                {
+                    <br>
+                }
+            }
+        }
+    </div>
+    <div class="bottom-frame">
+    </div>
+</div>
+
+@code {
+    protected override PageType Type { get { return PageType.Ammonomicon; }}
+
+    [Inject]
+    public IRefreshService RefreshService { get; set; }
+
+    protected override void OnInitialized()
+    {
+        RefreshService.RefreshRequested += OnRefresh;
+    }
+    private async Task OnRefresh()
+    {
+        StateHasChanged();
+        await Task.CompletedTask;
+    }
+
+    private async Task BackButtonClick()
+    {
+        NavigateBack();
+        await Task.CompletedTask;
+    }
+
+    private async Task AddButtonClick()
+    {
+        State.CurrentInventory.Add(State.CurrentItemSelected);
+
+        await RefreshService.RequestRefresh();
+    }
+
+    private async Task CancelButtonClick()
+    {
+        State.Select(State.CurrentInventory.Guns.FirstOrDefault());
+
+        await RefreshService.RequestRefresh();
+    }
+}

@@ -1,0 +1,54 @@
+﻿.equipment-heading {
+    height: 12%;
+    min-height: 12%;
+    font-size: 60px;
+    font-family: Alagard;
+    padding-top: 5px;
+}
+
+.guns-frame {
+    height: fit-content;
+    min-height: 22%;
+    display: grid;
+    grid-template-rows: min-content 1fr;
+    place-items: center;
+}
+
+.actives-frame {
+    height: 22%;
+    min-height: 23%;
+    display: grid;
+    grid-template-columns: 100%;
+    grid-template-rows: min-content 1fr;
+    place-items: center;
+}
+
+.passives-frame {
+    height: fit-content;
+    min-height: 36%;
+    display: grid;
+    grid-template-columns: 100%;
+    grid-template-rows: min-content 1fr;
+    place-items: center;
+}
+
+.inventory-label {
+    background-color: #201d2f;
+    color: white;
+    width: 44%;
+    height: fit-content;
+    padding: 2px 2px 2px 5px;
+    margin-bottom: 5px;
+    font-size: 36px;
+    font-family: Pixeloid;
+    letter-spacing: 0.1em;
+    border-radius: 6px;
+    border-color: white;
+    border-width: 4px;
+    border-style: ridge;
+    outline: 2px solid #343147;
+}
+
+.overflow-container {
+    overflow-y: scroll;
+}

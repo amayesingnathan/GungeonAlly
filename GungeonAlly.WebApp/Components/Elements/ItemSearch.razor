@@ -1,0 +1,67 @@
+@inject InventoryState State
+
+@{
+    <div class="popup-container">
+        <div class="search-results-box">
+            <div class="search-input">
+                <input type="text" @ref="SearchBar" @bind="@SearchText" @oninput="SearchTextChanged"/>
+                <div class="exit-search-button oi oi-circle-x h2" @onclick="ExitButtonPressed">
+                </div>
+            </div>
+
+            @foreach (ItemBase item in SearchItems.Take(12))
+            {
+                <div class="search-result" @onclick="() => ItemSelected(item)">
+                    <InventoryItem Context="@item" Selectable="false" Scale="1.5" />
+                    <div style="font-size: 20px !important;">
+                        @item.ItemName
+                    </div>
+                    <div>
+                        @item.Quality.ToString()
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}
+
+@code {
+    [Inject]
+    public IGungeonService GungeonDB { get; set; }
+    [Inject]
+    public IRefreshService RefreshService { get; set; }
+
+    private ElementReference SearchBar;
+
+    public string SearchText { get; set; } = string.Empty;
+
+    public ItemBase[] SearchItems { get; set; } = new ItemBase[0];
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+
+        if (firstRender)
+            await SearchBar.FocusAsync();
+    }
+
+    private async Task ExitButtonPressed()
+    {
+        SearchText = string.Empty;
+        await RefreshService.RequestRefresh();
+    }
+
+    private void SearchTextChanged(ChangeEventArgs e)
+    {
+        SearchText = e.Value as string ?? string.Empty;
+        SearchItems = GungeonDB.SearchItem(SearchText);
+    }
+
+    private async Task ItemSelected(ItemBase item)
+    {
+        State.Select(item);
+        SearchText = string.Empty;
+        await RefreshService.RequestRefresh();
+    }
+
+}

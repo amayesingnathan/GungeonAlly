@@ -1,0 +1,40 @@
+﻿@inject InventoryState State
+
+@{
+    string topPos = $"position: absolute; top: -{Synergies.Length * 1.2}em;";
+    <div class="popup-container" style="@topPos">
+        <div class="search-results-box">
+            @foreach (Synergy synergy in Synergies)
+            {
+                <div class="search-result">
+                    <div>
+                        @synergy.Name
+                    </div>
+                    <div>
+                        @synergy.Effect
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}
+
+@code {
+    [Inject]
+    public IGungeonService GungeonDB { get; set; }
+    [Inject]
+    public IRefreshService RefreshService { get; set; }
+
+    public Synergy[] Synergies { get; set; } = new Synergy[0];
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        if (State.CurrentItemSelected is null)
+            return;
+
+        var allSynergies = GungeonDB.GetSynergies(State.CurrentItemSelected.BaseID);
+    }
+
+}

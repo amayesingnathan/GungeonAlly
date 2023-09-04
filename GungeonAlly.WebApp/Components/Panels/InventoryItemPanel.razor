@@ -1,0 +1,32 @@
+﻿<div class="item-panel">
+    @foreach (var row in Context.IntoBuckets())
+    {
+        <div class="row-wrapper">
+            @foreach (ItemBase item in row)
+            {
+                <div class="column-wrapper">
+                    <InventoryItem Context="@item" Scale="5"/>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@code {
+
+    [Inject]
+    public IRefreshService RefreshService { get; set; }
+
+    [Parameter]
+    public IEnumerable<ItemBase> Context { get; set; }
+
+    protected override void OnInitialized()
+    {
+        RefreshService.RefreshRequested += OnRefresh;
+    }
+    private async Task OnRefresh()
+    {
+        StateHasChanged();
+        await Task.CompletedTask;
+    }
+}
