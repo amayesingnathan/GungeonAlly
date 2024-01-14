@@ -17,6 +17,7 @@
     border-bottom: 6px double #343147;
     padding-top: 2px;
     padding-bottom: 2px;
+    max-height: 80px;
 }
 
 .item-heading {
