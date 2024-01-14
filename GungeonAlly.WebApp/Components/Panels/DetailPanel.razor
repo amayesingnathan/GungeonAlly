@@ -77,7 +77,7 @@
 </div>
 
 @code {
-    protected override PageType Type { get { return PageType.Ammonomicon; }}
+    protected override PageType Type => PageType.Ammonomicon; 
 
     [Inject]
     public IRefreshService RefreshService { get; set; }

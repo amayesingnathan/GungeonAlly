@@ -24,7 +24,7 @@
 </div>
 
 @code {
-    protected override PageType Type { get { return PageType.Home; }}
+    protected override PageType Type => PageType.Home;
 
     private void OnLookup()
     {
