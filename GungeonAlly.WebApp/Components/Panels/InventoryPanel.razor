@@ -1,8 +1,20 @@
 ﻿@inject InventoryState State
 
 <div class="overflow-container">
-    <div class="equipment-heading centre">
-        Equipment
+    <div class="heading-bar">
+        <span class="inventory-button centre">
+            <ActionButton Icon="oi-minus"
+                Disabled="false"
+                OnClick="RemoveButtonClick" />
+        </span>
+        <div class="equipment-heading centre">
+            Equipment
+        </div>
+        <span class="inventory-button centre">
+            <ActionButton Icon="oi-plus"
+                Disabled="false"
+                OnClick="AddButtonClick" />
+        </span>
     </div>
 
     <div class="guns-frame">
@@ -39,30 +51,44 @@
     {
         RefreshService.RefreshRequested += OnRefresh;
 
-        State.CurrentInventory.AddRange(GungeonDB.GetGun("Serious Cannon"));
-        State.CurrentInventory.AddRange(GungeonDB.GetGun("Stinger"));
-        State.CurrentInventory.AddRange(GungeonDB.GetGun("Snowballer"));
-        State.CurrentInventory.AddRange(GungeonDB.GetGun("Eye of the Beholster"));
+        // State.CurrentInventory.AddRange(GungeonDB.GetGun("Serious Cannon"));
+        // State.CurrentInventory.AddRange(GungeonDB.GetGun("Stinger"));
+        // State.CurrentInventory.AddRange(GungeonDB.GetGun("Snowballer"));
+        // State.CurrentInventory.AddRange(GungeonDB.GetGun("Eye of the Beholster"));
 
-        State.CurrentInventory.AddRange(GungeonDB.GetItem("Daruma"));
+        // State.CurrentInventory.AddRange(GungeonDB.GetItem("Daruma"));
 
-        State.CurrentInventory.AddRange(GungeonDB.GetItem("Obsidian Shell Casing"));
-        State.CurrentInventory.AddRange(GungeonDB.GetItem("Explosive Rounds"));
-        State.CurrentInventory.AddRange(GungeonDB.GetItem("Katana Bullets"));
-        State.CurrentInventory.AddRange(GungeonDB.GetItem("Alpha Bullet"));
-        State.CurrentInventory.AddRange(GungeonDB.GetItem("Omega Bullets"));
-        State.CurrentInventory.AddRange(GungeonDB.GetItem("Dog"));
-        State.CurrentInventory.AddRange(GungeonDB.GetItem("Wolf"));
-        State.CurrentInventory.AddRange(GungeonDB.GetItem("Backpack"));
-        State.CurrentInventory.AddRange(GungeonDB.GetItem("Disarming Personality"));
-        State.CurrentInventory.AddRange(GungeonDB.GetItem("Honeycomb"));
-        State.CurrentInventory.AddRange(GungeonDB.GetItem("Yellow Chamber"));
-        State.CurrentInventory.AddRange(GungeonDB.GetItem("Sixth Chamber"));
+        // State.CurrentInventory.AddRange(GungeonDB.GetItem("Obsidian Shell Casing"));
+        // State.CurrentInventory.AddRange(GungeonDB.GetItem("Explosive Rounds"));
+        // State.CurrentInventory.AddRange(GungeonDB.GetItem("Katana Bullets"));
+        // State.CurrentInventory.AddRange(GungeonDB.GetItem("Alpha Bullet"));
+        // State.CurrentInventory.AddRange(GungeonDB.GetItem("Omega Bullets"));
+        // State.CurrentInventory.AddRange(GungeonDB.GetItem("Dog"));
+        // State.CurrentInventory.AddRange(GungeonDB.GetItem("Wolf"));
+        // State.CurrentInventory.AddRange(GungeonDB.GetItem("Backpack"));
+        // State.CurrentInventory.AddRange(GungeonDB.GetItem("Disarming Personality"));
+        // State.CurrentInventory.AddRange(GungeonDB.GetItem("Honeycomb"));
+        // State.CurrentInventory.AddRange(GungeonDB.GetItem("Yellow Chamber"));
+        // State.CurrentInventory.AddRange(GungeonDB.GetItem("Sixth Chamber"));
     }
 
     private async Task OnRefresh()
     {
         StateHasChanged();
         await Task.CompletedTask;
+    }
+
+    private async Task RemoveButtonClick()
+    {
+        State.CurrentInventory.Remove(State.CurrentItemSelected?.BaseID ?? 0);
+
+        await RefreshService.RequestRefresh();
+    }
+
+    private async Task AddButtonClick()
+    {
+        State.CurrentInventory.Add(State.CurrentItemSelected);
+
+        await RefreshService.RequestRefresh();
     }
 }

@@ -98,13 +98,6 @@
         await Task.CompletedTask;
     }
 
-    private async Task AddButtonClick()
-    {
-        State.CurrentInventory.Add(State.CurrentItemSelected);
-
-        await RefreshService.RequestRefresh();
-    }
-
     private async Task CancelButtonClick()
     {
         State.Select(State.CurrentInventory.Guns.FirstOrDefault());

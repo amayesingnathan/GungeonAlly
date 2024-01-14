@@ -1,9 +1,23 @@
-﻿.equipment-heading {
+﻿.heading-bar {
+    display: grid;
+    grid-template-columns: 10% 80% 10%;
     height: 12%;
     min-height: 12%;
+    padding-top: 5px;
+}
+
+.equipment-heading {
     font-size: 60px;
     font-family: Alagard;
-    padding-top: 5px;
+}
+
+.inventory-button {
+    padding-top: 8px;
+    padding-bottom: 2px;
+    max-height: 75px;
+    margin-top: 4px;
+    margin-right: 10px;
+    margin-left: 10px;
 }
 
 .guns-frame {
@@ -12,6 +26,7 @@
     display: grid;
     grid-template-rows: min-content 1fr;
     place-items: center;
+    padding-bottom: 10px;
 }
 
 .actives-frame {
@@ -21,6 +36,7 @@
     grid-template-columns: 100%;
     grid-template-rows: min-content 1fr;
     place-items: center;
+    padding-bottom: 10px;
 }
 
 .passives-frame {
@@ -30,6 +46,7 @@
     grid-template-columns: 100%;
     grid-template-rows: min-content 1fr;
     place-items: center;
+    padding-bottom: 10px;
 }
 
 .inventory-label {
