@@ -1,18 +1,22 @@
 ﻿using GungeonAlly.Database;
+using System.Configuration;
 
 namespace GungeonAlly.WebScraper
 {
     class Program
     {
+        static string ConnectionString = ConfigurationManager.ConnectionStrings["EtGDb"].ConnectionString;
+
         static void Main()
         {
-            GungeonDB.ResetDatabase();
-            var webScraper = new Scraper();
+            var gungeonDb = new GungeonDB(ConnectionString);
+            gungeonDb.ResetDatabase();
+            var webScraper = new Scraper(gungeonDb);
 
-            GungeonDB.ImportGuns(webScraper.GetGunData());
-            GungeonDB.ImportItems(webScraper.GetItemData());
+            gungeonDb.ImportGuns(webScraper.GetGunData());
+            gungeonDb.ImportItems(webScraper.GetItemData());
 
-            GungeonDB.ImportSynergies(webScraper.GetSynergiesData());
+            gungeonDb.ImportSynergies(webScraper.GetSynergiesData());
         }
     }
 }

@@ -1,13 +1,19 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using GungeonAlly.WebApp.Services;
+using System.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var connString = builder.Configuration.GetConnectionString("EtGDb");
+if (connString == null)
+    throw new ConfigurationErrorsException("Missing connection string.");
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddSingleton<IGungeonService, GungeonService>();
+builder.Services.AddSingleton<IGungeonService>(new GungeonService(connString));
 builder.Services.AddSingleton<InventoryState>();
 builder.Services.AddSingleton<PageHistory>();
 builder.Services.AddScoped<IRefreshService, RefreshService>();

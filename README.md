@@ -1,20 +1,29 @@
 # GungeonAlly
 
-GungeonAlly is Blazor Server Web App for aiding your adventures in Enter the Gungeon.
+GungeonAlly is Blazor WASM Web App for aiding your adventures in Enter the Gungeon. Use it to quickly look up key information without having to search through different wiki pages.
 
 ## Installation
 
-Clone the repository in order to download and run the app. Start the GungeonApp.WebScraper project to download all required data into a SQL Server database
-and start GungeonApp.WebApp in order to run the web app.
+### Dependencies:
+
+* Docker - This project is deployed as a set of docker containers, and uses ASP.NET Core 7.0 and SQL Server 2022 images.
+
+Clone the repository in order to download the necessary projects for building and running the app.
 
 ```
 git clone --recursive https://github.com/amayesingnathan/GungeonAlly.git
 ```
 
-I created this app purely for personal use and runs on a Raspberry Pi in my home network, so it is not hosted anywhere publicly. 
-Whilst I could run this in the cloud, I intend to add a fully automated build and setup 
-script to allow users to download and set up the web app as a locally run application. 
+From the solution directory, execute the command `docker-compose up`. This will download an ASP.NET and SQL Server image,
+before running initialisation scripts to create the database and tables used by the app.
+
+Next, it will execute a simple web scraper .NET application that will query the Enter the Gungeon wiki in order to populate the newly initialised database.
+
+Finally, it will launch the Blazor WASM web app locally and is exposed on port 5000 on your machine. The port can be edited in the docker-compose file.
+
+I created this app purely for personal use and runs on a small server in my home network, so it is not hosted anywhere publicly. 
+By providing docker support, users can easily host their own instance of the web app to run and use.
 
 ## License
 
-[MIT](https://github.com/amayesingnathan/GungeonAlly/blob/853f50efad19096b372358652fa4c8971b2a1250/README.md)
+[MIT](https://github.com/amayesingnathan/GungeonAlly/blob/main/LICENSE)

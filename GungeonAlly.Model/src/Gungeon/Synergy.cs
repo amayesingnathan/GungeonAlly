@@ -37,10 +37,13 @@ namespace GungeonAlly.Model
     {
         [ColumnMap("SynergyID")]
         public int SynergyID { get; set; }
+
         [ColumnMap("Name")]
         public string SynergyName { get; set; }
+
         [ColumnMap("Effect")]
         public string Effect { get; set; }
+
         [ColumnMap("RequireType")]
         public Requirement RequireType { get; set; }
 

@@ -15,9 +15,13 @@ namespace GungeonAlly.WebScraper
 {
     public class Scraper
     {
+        private GungeonDB _DB;
         private readonly HtmlWeb Web = new();
         private int NextItemID = 0;
         private int NextSynergyID = 0;
+
+        public Scraper(GungeonDB db) { _DB = db; }
+
         public IEnumerable<Gun> GetGunData()
         {
             HtmlDocument doc = Web.Load("https://enterthegungeon.fandom.com/wiki/Guns");
@@ -137,7 +141,7 @@ namespace GungeonAlly.WebScraper
                     if (itemStrings.All(x => x.StartsWith("Master Round")))
                     {
                         // Special case for Chief Master and Master's Chambers synergies
-                        var masterRounds = GungeonDB.GetItemBase("Master Round");
+                        var masterRounds = _DB.GetItemBase("Master Round");
                         if (synergy.Name.Equals("Chief Master"))
                             synergy.RequireTwo = masterRounds;
                         else if (synergy.Name.Equals("Master's Chambers"))
@@ -155,20 +159,20 @@ namespace GungeonAlly.WebScraper
             return synergies;
         }
 
-        private static void GetSynergyItems(IEnumerable<string> items, Synergy synergy, Requirement type)
+        private void GetSynergyItems(IEnumerable<string> items, Synergy synergy, Requirement type)
         {
             switch (type)
             {
                 case Requirement.RequireOne:
-                    synergy.RequireOne = items.Select(x => GungeonDB.GetItemBase(x).First()).ToArray();
+                    synergy.RequireOne = items.Select(x => _DB.GetItemBase(x).First()).ToArray();
                     break;
 
                 case Requirement.RequireTwo:
-                    synergy.RequireTwo = items.Select(x => GungeonDB.GetItemBase(x).First()).ToArray();
+                    synergy.RequireTwo = items.Select(x => _DB.GetItemBase(x).First()).ToArray();
                     break;
 
                 case Requirement.RequireAll:
-                    synergy.RequireAll = items.Select(x => GungeonDB.GetItemBase(x).First()).ToArray();
+                    synergy.RequireAll = items.Select(x => _DB.GetItemBase(x).First()).ToArray();
                     break;
             }
         }

@@ -1,0 +1,12 @@
+﻿.art-splash-layout {
+    margin: 40px 20px 40px 20px;
+}
+
+    .art-splash-layout img {
+        width: 60%;
+        height: auto;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        border-radius: 10%;
+    }x

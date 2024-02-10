@@ -1,0 +1,26 @@
+#Web Scraper
+
+FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
+WORKDIR /app
+
+
+FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+ARG BUILD_CONFIGURATION=Release
+WORKDIR /src
+COPY ["GungeonAlly.WebScraper/GungeonAlly.WebScraper.csproj", "GungeonAlly.WebScraper/"]
+COPY ["GungeonAlly.Database/GungeonAlly.Database.csproj", "GungeonAlly.Database/"]
+COPY ["GungeonAlly.Model/GungeonAlly.Model.csproj", "GungeonAlly.Model/"]
+COPY ["GungeonAlly.DatabaseCore/GungeonAlly.DatabaseCore.csproj", "GungeonAlly.DatabaseCore/"]
+RUN dotnet restore "./GungeonAlly.WebScraper/./GungeonAlly.WebScraper.csproj"
+COPY . .
+WORKDIR "/src/GungeonAlly.WebScraper"
+RUN dotnet build "./GungeonAlly.WebScraper.csproj" -c $BUILD_CONFIGURATION -o /app/build
+
+FROM build AS publish
+ARG BUILD_CONFIGURATION=Release
+RUN dotnet publish "./GungeonAlly.WebScraper.csproj" -c $BUILD_CONFIGURATION -o /app/publish
+
+FROM base AS webscraper
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "GungeonAlly.WebScraper.dll"]

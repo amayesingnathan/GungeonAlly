@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GungeonAlly.DatabaseCore", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GungeonAlly.Database", "GungeonAlly.Database\GungeonAlly.Database.csproj", "{55991A07-DDB3-43C6-AF11-25346600330B}"
 EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "EtGDB", "EtGDB\EtGDB.sqlproj", "{FEB83A92-A9F1-4F0E-930F-194485560697}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,12 @@ Global
 		{55991A07-DDB3-43C6-AF11-25346600330B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{55991A07-DDB3-43C6-AF11-25346600330B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{55991A07-DDB3-43C6-AF11-25346600330B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FEB83A92-A9F1-4F0E-930F-194485560697}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FEB83A92-A9F1-4F0E-930F-194485560697}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FEB83A92-A9F1-4F0E-930F-194485560697}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{FEB83A92-A9F1-4F0E-930F-194485560697}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FEB83A92-A9F1-4F0E-930F-194485560697}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FEB83A92-A9F1-4F0E-930F-194485560697}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -10,31 +10,29 @@ using System.Data.SqlClient;
 
 using GungeonAlly.DatabaseCore;
 using GungeonAlly.Model;
-using System.Xml.Linq;
 
 namespace GungeonAlly.Database
 {
-    public static class GungeonDB
+    public class GungeonDB
     {
-        private const string ConnectionString = @"Server=.\SQLEXPRESS;Database=EtGDB;Trusted_Connection=True;";
+        private string _ConnectionString;
+
+        public GungeonDB(string connectionString)
+        {
+            _ConnectionString = connectionString;
+        }
+
 
         #region Database Initialisation
-        public static void ResetDatabase()
+        public void ResetDatabase()
         {
             try
             {
-                DatabaseConnection db = new DatabaseConnection(ConnectionString);
+                DatabaseConnection db = new DatabaseConnection(_ConnectionString);
 
                 using (var dbc = db.GetDbConnection())
                 {
-                    string commandString = @"
-                        truncate table dbo.Items;
-                        truncate table dbo.Guns;
-                        truncate table dbo.SynergyDetail;
-                        delete from dbo.Synergies;
-                        delete from dbo.BaseItems;
-                    ";
-                    db.ExecuteNonQuery(commandString);
+                    dbc.ExecuteNonQuery("spResetAllTables", CommandType.StoredProcedure);
                 }
             }
             catch (Exception ex)
@@ -43,11 +41,11 @@ namespace GungeonAlly.Database
             }
         }
 
-        public static void ImportGuns(IEnumerable<Gun> guns)
+        public void ImportGuns(IEnumerable<Gun> guns)
         {
             try
             {
-                DatabaseConnection db = new DatabaseConnection(ConnectionString);
+                DatabaseConnection db = new DatabaseConnection(_ConnectionString);
 
                 using (var dbc = db.GetDbConnection())
                 {
@@ -61,11 +59,11 @@ namespace GungeonAlly.Database
                 return;
             }
         }
-        public static void ImportItems(IEnumerable<Item> items)
+        public void ImportItems(IEnumerable<Item> items)
         {
             try
             {
-                DatabaseConnection db = new DatabaseConnection(ConnectionString);
+                DatabaseConnection db = new DatabaseConnection(_ConnectionString);
 
                 using (var dbc = db.GetDbConnection())
                 {
@@ -79,11 +77,11 @@ namespace GungeonAlly.Database
                 return;
             }
         }
-        public static void ImportSynergies(IEnumerable<Synergy> synergies)
+        public void ImportSynergies(IEnumerable<Synergy> synergies)
         {
             try
             {
-                DatabaseConnection db = new DatabaseConnection(ConnectionString);
+                DatabaseConnection db = new DatabaseConnection(_ConnectionString);
 
                 using (var dbc = db.GetDbConnection())
                 {
@@ -99,16 +97,10 @@ namespace GungeonAlly.Database
         }
 
 
-        private static void InsertToBaseItemTable(DbConnection dbc, IEnumerable<ItemBase> items)
+        private void InsertToBaseItemTable(DbConnection dbc, IEnumerable<ItemBase> items)
         {
-            string commandString = $@"
-                        insert into dbo.BaseItems
-                            (BaseID, Type, IconImageData, ItemName, Quote, Quality, Description)
-                        values
-                            (@ID, @Type, @Image, @Name, @Quote, @Quality, @Description);    
-                    ";
+            var cmd = dbc.CreateCommand("spInsertBaseItem", CommandType.StoredProcedure);
 
-            var cmd = dbc.CreateCommand(commandString);
             var id = new SqlParameter("@ID", SqlDbType.Int);
             var image = new SqlParameter("@Image", SqlDbType.VarBinary, -1) { IsNullable = true };
             var type = new SqlParameter("@Type", SqlDbType.Int);
@@ -133,16 +125,10 @@ namespace GungeonAlly.Database
             }
         }
 
-        private static void InsertToGunTable(DbConnection dbc, IEnumerable<Gun> guns)
+        private void InsertToGunTable(DbConnection dbc, IEnumerable<Gun> guns)
         {
-            string commandString = $@"
-                        insert into dbo.Guns
-                            (BaseID, Notes, GunType, DPS, MagSize, AmmoCap, Damage, FireRate, ReloadTime, ShotSpeed, Range, Force, Spread, Class)
-                        values
-                            (@ID, @Notes, @GunType, @DPS, @MagSize, @AmmoCap, @Damage, @FireRate, @ReloadTime, @ShotSpeed, @Range, @Force, @Spread, @Class);    
-                    ";
+            var cmd = dbc.CreateCommand("spInsertGun", CommandType.StoredProcedure);
 
-            var cmd = dbc.CreateCommand(commandString);
             var id = new SqlParameter("@ID", SqlDbType.Int);
             var notes = new SqlParameter("@Notes", SqlDbType.NVarChar, -1);
             var guntype = new SqlParameter("@GunType", SqlDbType.NVarChar, -1);
@@ -181,16 +167,10 @@ namespace GungeonAlly.Database
             }
         }
 
-        private static void InsertToItemTable(DbConnection dbc, IEnumerable<Item> items)
+        private void InsertToItemTable(DbConnection dbc, IEnumerable<Item> items)
         {
-            string commandString = $@"
-                        insert into dbo.Items
-                            (BaseID, ItemEffect, ItemType)
-                        values
-                            (@ID, @Effect, @Type);    
-                    ";
+            var cmd = dbc.CreateCommand("spInsertItem", CommandType.StoredProcedure);
 
-            var cmd = dbc.CreateCommand(commandString);
             var id = new SqlParameter("@ID", SqlDbType.Int);
             var effect = new SqlParameter("@Effect", SqlDbType.NVarChar, -1);
             var type = new SqlParameter("@Type", SqlDbType.NVarChar, -1);
@@ -207,16 +187,10 @@ namespace GungeonAlly.Database
             }
         }
 
-        private static void InsertToSynergyTable(DbConnection dbc, IEnumerable<Synergy> items)
+        private void InsertToSynergyTable(DbConnection dbc, IEnumerable<Synergy> items)
         {
-            string commandString = $@"
-                        insert into dbo.Synergies
-                            (SynergyID, Name, Effect)
-                        values
-                            (@ID, @Name, @Effect);    
-                    ";
+            var cmd = dbc.CreateCommand("spInsertSynergy", CommandType.StoredProcedure);
 
-            var cmd = dbc.CreateCommand(commandString);
             var id = new SqlParameter("@ID", SqlDbType.Int);
             var name = new SqlParameter("@Name", SqlDbType.NVarChar, -1);
             var effect = new SqlParameter("@Effect", SqlDbType.NVarChar, -1);
@@ -233,16 +207,10 @@ namespace GungeonAlly.Database
             }
         }
 
-        private static void InsertToSynergyDetailTable(DbConnection dbc, IEnumerable<Synergy> synergies)
+        private void InsertToSynergyDetailTable(DbConnection dbc, IEnumerable<Synergy> synergies)
         {
-            string commandString = $@"
-                        insert into dbo.SynergyDetail
-                            (SynergyID, ItemID, RequireType)
-                        values
-                            (@SynergyID, @ItemID, @Type);    
-                    ";
+            var cmd = dbc.CreateCommand("spInsertSynergyDetail", CommandType.StoredProcedure);
 
-            var cmd = dbc.CreateCommand(commandString);
             var synergyId = new SqlParameter("@SynergyID", SqlDbType.Int);
             var itemID = new SqlParameter("@ItemID", SqlDbType.Int);
             var type = new SqlParameter("@Type", SqlDbType.Int);
@@ -283,11 +251,11 @@ namespace GungeonAlly.Database
         #endregion
 
         #region ItemBase
-        public static ItemBase[] GetAllItems()
+        public ItemBase[] GetAllItems()
         {
             try
             {
-                DatabaseConnection db = new DatabaseConnection(ConnectionString);
+                DatabaseConnection db = new DatabaseConnection(_ConnectionString);
 
                 using (var dbc = db.GetDbConnection())
                 {
@@ -302,11 +270,11 @@ namespace GungeonAlly.Database
             }
         }
 
-        public static ItemBase[] GetItemBase(string name)
+        public ItemBase[] GetItemBase(string name)
         {
             try
             {
-                DatabaseConnection db = new DatabaseConnection(ConnectionString);
+                DatabaseConnection db = new DatabaseConnection(_ConnectionString);
 
                 using (var dbc = db.GetDbConnection())
                 {
@@ -327,59 +295,56 @@ namespace GungeonAlly.Database
         #endregion
 
         #region Gun
-        public static Gun? GetGun(int id)
+        public Gun? GetGun(int id)
         {
-            DatabaseConnection db = new DatabaseConnection(ConnectionString);
+            DatabaseConnection db = new DatabaseConnection(_ConnectionString);
 
             using (var dbc = db.GetDbConnection())
             {
-                string commandString = $@"select * from dbo.BaseItems bi
-                                            inner join Guns g on bi.BaseID=g.BaseID
-                                            where bi.BaseID={id}
-                                        ";
-                var results = db.ExecuteReaderAsEnumerable<Gun>(dbc, commandString);
-                return results.FirstOrDefault();
+                const string commandString = "spGetGunById";
+                return dbc.ExecuteReader(commandString, CommandType.StoredProcedure, parameterBinding: cmd => new[] { cmd.CreateParameter("@GunId", id) })
+                    .AsEnumerable<Gun>()
+                    .FirstOrDefault();
             }
         }
-        public static Gun[] GetGun(string name)
+        public Gun[] GetGun(string name)
         {
             try
             {
-                DatabaseConnection db = new DatabaseConnection(ConnectionString);
+                DatabaseConnection db = new DatabaseConnection(_ConnectionString);
 
                 using (var dbc = db.GetDbConnection())
                 {
-                    string commandString = $@"select * from dbo.BaseItems bi
-                                              inner join Guns g on bi.BaseID=g.BaseID
-                                              where bi.ItemName='{SanitiseItemName(name)}'
-                                            ";
-                    return db.ExecuteReaderAsEnumerable<Gun>(dbc, commandString).ToArray();
+                    const string commandString = "spGetGunByName";
+
+                    string safeItemName = SanitiseItemName(name);
+                    return dbc.ExecuteReader(commandString, CommandType.StoredProcedure, parameterBinding: cmd => new[] { cmd.CreateParameter("@ItemName", safeItemName) })
+                        .AsEnumerable<Gun>()
+                        .ToArray();
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
-                return new Gun[0];
+                return Array.Empty<Gun>();
             }
         }
 
         #endregion
 
         #region Item
-        public static Item? GetItem(int id)
+        public Item? GetItem(int id)
         {
             try
             {
-                DatabaseConnection db = new DatabaseConnection(ConnectionString);
+                DatabaseConnection db = new DatabaseConnection(_ConnectionString);
 
                 using (var dbc = db.GetDbConnection())
                 {
-                    string commandString = $@"select * from dbo.BaseItems bi
-                                              inner join Items i on bi.BaseID=i.BaseID
-                                              where bi.BaseID={id}
-                                            ";
-                    var results = db.ExecuteReaderAsEnumerable<Item>(dbc, commandString);
-                    return results.FirstOrDefault();
+                    const string commandString = "spGetItemById";
+                    return dbc.ExecuteReader(commandString, CommandType.StoredProcedure, parameterBinding: cmd => new[] { cmd.CreateParameter("@ItemId", id)})
+                        .AsEnumerable<Item>()
+                        .FirstOrDefault();
                 }
             }
             catch (Exception ex)
@@ -388,58 +353,43 @@ namespace GungeonAlly.Database
                 return null;
             }
         }
-        public static Item[] GetItem(string name)
+        public Item[] GetItem(string name)
         {
             try
             {
-                DatabaseConnection db = new DatabaseConnection(ConnectionString);
+                DatabaseConnection db = new DatabaseConnection(_ConnectionString);
 
                 using (var dbc = db.GetDbConnection())
                 {
-                    string commandString = $@"select * from dbo.BaseItems bi
-                                              inner join Items i on bi.BaseID=i.BaseID
-                                              where bi.ItemName='{SanitiseItemName(name)}'
-                                            ";
-                    return db.ExecuteReaderAsEnumerable<Item>(dbc, commandString).ToArray();
+                    const string commandString = "spGetItemByName";
+
+                    string safeItemName = SanitiseItemName(name);
+                    return dbc.ExecuteReader(commandString, CommandType.StoredProcedure, parameterBinding: cmd => new[] { cmd.CreateParameter("@ItemName", safeItemName) })
+                        .AsEnumerable<Item>()
+                        .ToArray();
                 }
             }
             catch (Exception ex) 
             {
                 Console.WriteLine(ex.ToString());
-                return new Item[0];
+                return Array.Empty<Item>();
             }
         }
 
         #endregion
 
         #region Synergies
-        public static Synergy[] GetSynergies(int id)
+        public Synergy[] GetSynergies(int id)
         {
             try
             {
-                DatabaseConnection db = new DatabaseConnection(ConnectionString);
+                DatabaseConnection db = new DatabaseConnection(_ConnectionString);
 
                 using (var dbc = db.GetDbConnection())
                 {
-                    string commandString = $@"select s.SynergyID, 
-	                                            s.Name, 
-	                                            s.Effect, 
-	                                            sd.RequireType, 
-	                                            bi.BaseID,
-	                                            bi.Type,
-	                                            bi.IconImageData,
-	                                            bi.ItemName,
-	                                            bi.Quote,
-	                                            bi.Quality,
-                                                bi.Description
-                                            from
-	                                            dbo.SynergyDetail sd
-	                                            inner join dbo.Synergies s on s.SynergyID=sd.SynergyID		
-	                                            inner join dbo.SynergyDetail osd on s.SynergyID=osd.SynergyID
-	                                            inner join dbo.BaseItems bi on bi.BaseID=osd.ItemID
-	                                            where sd.ItemID={id}
-                                            ";
-                    var results = db.ExecuteReaderAsEnumerable<SynergyEntry>(dbc, commandString);
+                    const string commandString = "spGetSynergies";
+                    var results = dbc.ExecuteReader(commandString, CommandType.StoredProcedure, parameterBinding: cmd => new[] { cmd.CreateParameter("ItemId", id) })
+                        .AsEnumerable<SynergyEntry>();
 
                     return results
                         .GroupBy(x => new { ID = x.SynergyID, Name = x.SynergyName, x.Effect })
@@ -471,32 +421,19 @@ namespace GungeonAlly.Database
         #endregion
 
         #region Search
-        public static ItemBase[] MatchItem(string itemName)
+        public ItemBase[] MatchItem(string itemName)
         {
             try
             {
-                DatabaseConnection db = new DatabaseConnection(ConnectionString);
+                DatabaseConnection db = new DatabaseConnection(_ConnectionString);
 
                 using (var dbc = db.GetDbConnection())
                 {
+                    const string commandString = "spMatchItemName";
                     string safeItemName = SanitiseItemName(itemName);
-                    string commandString = @"
-                        declare @SearchString nvarchar(max) = '%' + @Name + '%';
-                        declare @GoodMatch    nvarchar(max) = '%' + @Name;
-                        declare @BadMatch     nvarchar(max) = @Name + '%';
 
-                        select TOP 50 * from dbo.BaseItems
-                        where ItemName like @SearchString
-                        ORDER BY 
-                            CASE
-                                WHEN ItemName LIKE @GoodMatch THEN 1
-                                WHEN ItemName LIKE @BadMatch THEN 3
-                                ELSE 2
-                            END, ItemName
-                    ";
-
-                    var name = new SqlParameter("@Name", SqlDbType.NVarChar, -1) { Value = safeItemName };
-                    return db.ExecuteReaderAsEnumerable<ItemBase>(dbc, commandString, CommandType.Text, null, name)
+                    return dbc.ExecuteReader(commandString, CommandType.StoredProcedure, parameterBinding: cmd => new[] { cmd.CreateParameter("@Name", safeItemName) })
+                        .AsEnumerable<ItemBase>()
                         .OrderBy(x => !x.ItemName.StartsWith(itemName, StringComparison.OrdinalIgnoreCase))
                         .ThenBy(x => x.ItemName)
                         .ToArray();
@@ -505,7 +442,7 @@ namespace GungeonAlly.Database
             catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
-                return new ItemBase[0];
+                return Array.Empty<ItemBase>();
             }
         }
 
@@ -513,11 +450,11 @@ namespace GungeonAlly.Database
 
         #region Utils
 
-        public static void SetColumnValue(int id, string column, object value)
+        public void SetColumnValue(int id, string column, object value)
         {
             try
             {
-                DatabaseConnection db = new DatabaseConnection(ConnectionString);
+                DatabaseConnection db = new DatabaseConnection(_ConnectionString);
 
                 using (var dbc = db.GetDbConnection())
                 {

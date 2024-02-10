@@ -12,11 +12,18 @@ namespace GungeonAlly.WebApp.Services
 {
     public class GungeonService : IGungeonService
     {
+        private GungeonDB _DB;
+
+        public GungeonService(string connectionString)
+        {
+            _DB = new GungeonDB(connectionString);
+        }   
+
         public Gun? GetGun(int id)
         {
             try
             {
-                var gun = GungeonDB.GetGun(id);
+                var gun = _DB.GetGun(id);
                 if (gun is null)
                 {
                     Console.WriteLine("Could not locate gun with id {0}", id);
@@ -35,7 +42,7 @@ namespace GungeonAlly.WebApp.Services
         {
             try
             {
-                var gun = GungeonDB.GetGun(name);
+                var gun = _DB.GetGun(name);
                 if (gun is null)
                 {
                     Console.WriteLine("Could not locate gun with name {0}", name);
@@ -54,7 +61,7 @@ namespace GungeonAlly.WebApp.Services
         {
             try
             {
-                var item = GungeonDB.GetItem(id);
+                var item = _DB.GetItem(id);
                 if (item is null)
                 {
                     Console.WriteLine("Could not locate item with id {0}", id);
@@ -73,7 +80,7 @@ namespace GungeonAlly.WebApp.Services
         {
             try
             {
-                var item = GungeonDB.GetItem(name);
+                var item = _DB.GetItem(name);
                 if (item is null)
                 {
                     Console.WriteLine("Could not locate item with name {0}", name);
@@ -92,7 +99,7 @@ namespace GungeonAlly.WebApp.Services
         {
             try
             {
-                var item = GungeonDB.MatchItem(name);
+                var item = _DB.MatchItem(name);
                 if (item is null)
                 {
                     Console.WriteLine("Could not locate any items matching name {0}", name);
@@ -111,7 +118,7 @@ namespace GungeonAlly.WebApp.Services
         {
             try
             {
-                var synergies = GungeonDB.GetSynergies(itemID);
+                var synergies = _DB.GetSynergies(itemID);
                 if (synergies is null)
                 {
                     Console.WriteLine("Could not locate any synergies for item {0}", itemID);
