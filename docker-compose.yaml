@@ -6,7 +6,6 @@ volumes:
 services:
   gungeon_ally:
     build: 
-      context: .
       dockerfile: Dockerfile.WebApp
     container_name: gungeon_ally_app
     ports:
@@ -27,7 +26,7 @@ services:
       
     restart: always
     healthcheck:
-      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P Gungeon@llyLoginPassword123 -Q 'SELECT 1' || exit 1"]
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P ${SA_PASSWORD} -Q 'SELECT 1' || exit 1"]
       interval: 10s
       retries: 10
       start_period: 10s
@@ -35,27 +34,33 @@ services:
       
     environment:
       - ACCEPT_EULA=y
-      - SA_PASSWORD=Gungeon@llyLoginPassword123
+      - SA_PASSWORD=${SA_PASSWORD}
       
   sqlserver.init:
     image: "mcr.microsoft.com/mssql/server:2022-latest"
     container_name: sqlserver.init_app
     volumes:
-      - ./init:/docker-entrypoint-initdb.d
+      - ./init:/init
     depends_on:
       sqlserver:
         condition: service_healthy
     command: >
       bash -c '
-      /opt/mssql-tools/bin/sqlcmd -S sqlserver -U sa -P Gungeon@llyLoginPassword123 -d master -i docker-entrypoint-initdb.d/init.sql;
-      echo "All done!";
-      '
+        /init/init.sh ${SA_PASSWORD};
+        '
+    environment:
+      - SA_PASSWORD=${SA_PASSWORD}
       
   sqlserver.build:
     build: 
-      context: .
       dockerfile: Dockerfile.WebScraper
     container_name: sqlserver.build_app
+    volumes:
+      - ./init:/init
     depends_on:
       sqlserver.init:
         condition: service_completed_successfully
+    command: >
+      bash -c '
+        /init/build.sh;
+        '

@@ -5,3 +5,9 @@ bin/
 obj/
 
 packages/
+
+# Docker First Run Files
+init/init_complete
+init/build_complete
+
+.env
