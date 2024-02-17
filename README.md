@@ -7,6 +7,7 @@ GungeonAlly is Blazor WASM Web App for aiding your adventures in Enter the Gunge
 ### Dependencies:
 
 * Docker - This project is deployed as a set of docker containers, and uses ASP.NET Core 7.0 and SQL Server 2022 images.
+* docker-compose - This project uses docker-compose to build a set of docker containers for the application. 
 
 Clone the repository in order to download the necessary projects for building and running the app.
 

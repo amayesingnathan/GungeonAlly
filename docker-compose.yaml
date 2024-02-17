@@ -6,6 +6,7 @@ volumes:
 services:
   gungeon_ally:
     build: 
+      context: .
       dockerfile: Dockerfile.WebApp
     container_name: gungeon_ally_app
     ports:
@@ -53,6 +54,7 @@ services:
       
   sqlserver.build:
     build: 
+      context: .
       dockerfile: Dockerfile.WebScraper
     container_name: sqlserver.build_app
     volumes:
