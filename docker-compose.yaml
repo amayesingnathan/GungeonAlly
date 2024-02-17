@@ -17,8 +17,8 @@ services:
         condition: service_completed_successfully
       
   sqlserver:
-    image: "mcr.microsoft.com/mssql/server:2022-latest"
-    container_name: sql_server2022
+    image: "mcr.microsoft.com/mssql/server:2019-latest"
+    container_name: sql_server2019
     ports: # not actually needed, because the two services are on the same network
       - "1433:1433" 
       
@@ -38,7 +38,7 @@ services:
       - SA_PASSWORD=${SA_PASSWORD}
       
   sqlserver.init:
-    image: "mcr.microsoft.com/mssql/server:2022-latest"
+    image: "mcr.microsoft.com/mssql/server:2019-latest"
     container_name: sqlserver.init_app
     volumes:
       - ./init:/init
